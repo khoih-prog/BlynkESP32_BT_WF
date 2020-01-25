@@ -24,7 +24,9 @@ In your code, replace
 1. `BlynkSimpleEsp32_BT_WF.h` with `BlynkSimpleEsp32_BT_WF.h`
 2. `BlynkSimpleEsp32_BLE.h`   with `BlynkSimpleEsp32_BLE_WF.h`
 3. `BlynkSimpleEsp32.h`       with `BlynkSimpleEsp32_WF.h`
-3. `Blynk.run();`             with `Blynk_BT.run()` for BlueTooth related function calls
+4. `Blynk.run();`             with `Blynk_BT.run()` for BlueTooth related function calls
+or 
+5. `Blynk.run();`             with `Blynk_BLE.run()` for BLE related function calls
 
 
 That's it.
