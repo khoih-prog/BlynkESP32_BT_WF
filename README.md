@@ -1,0 +1,109 @@
+## BlynkESP32_BT_WF
+
+[![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkESP32_BT_WF.svg?)](https://www.ardu-badge.com/BlynkESP32_BT_WF)
+
+To enable inclusion of both Blynk BT and WiFi libraries. Then select one to use at runtime.
+
+
+### Installation
+
+The suggested way to install is to:
+
+1. Navigate to [BlynkESP32_BT_WF] (https://github.com/khoih-prog/BlynkESP32_BT_WF) page.
+2. Download the latest release `BlynkESP32_BT_WF-master.zip`.
+3. Extract the zip file to `BlynkESP32_BT_WF-master` directory 
+4. Copy whole `BlynkESP32_BT_WF-master/src` folder to Arduino libraries' `src` directory such as `~/Arduino/libraries/Blynk/src`.
+
+The file BlynkSimpleEsp32_BT_WF.h, and BlynkSimpleEsp32_WF.h must be placed in Blynk libraries `src` directory (normally `~/Arduino/libraries/Blynk/src`)
+
+Another way is to use `Arduino Library Manager`. Search for `BlynkSimpleEsp32_BT_WF.h`, then select / install the latest version.
+
+### How to use
+
+In your code, replace
+1. `BlynkSimpleEsp32_BT_WF.h` with `BlynkSimpleEsp32_BT_WF.h`
+2. `BlynkSimpleEsp32.h`       with `BlynkSimpleEsp32_WF.h`
+3. `Blynk.run();`             with `Blynk_BT.run()` for BlueTooth related function calls
+
+
+That's it.
+
+
+## Prerequisite
+* `ESP32 core 1.0.4 or later`
+* `Blynk library 0.6.1 or later` (https://www.arduino.cc/en/guide/libraries#toc3)
+
+## Sample code
+```
+#define BLYNK_PRINT Serial
+
+#define BLYNK_USE_BT_ONLY      false  //true
+
+#if BLYNK_USE_BT_ONLY
+#include <BlynkSimpleEsp32_BT_WF.h>
+#else
+#include <BlynkSimpleEsp32_BT_WF.h>
+#include <BlynkSimpleEsp32_WF.h>
+#define BT_OR_WIFI_OPTION_PIN      14        // Pin D14 mapped to pin GPIO14/HSPI_SCK/ADC16/TOUCH6/TMS of ESP32
+char ssid[] = "SSID";
+char pass[] = "PASS";
+#endif
+
+char auth[] = "****";
+
+bool USE_BT = true;
+
+void setup() 
+{
+  ....
+    
+  #if BLYNK_USE_BT_ONLY
+    Blynk_BT.setDeviceName("ESP32_BT_WF");
+    Blynk_BT.begin(auth);
+  #else
+    if (digitalRead(BT_OR_WIFI_OPTION_PIN) == HIGH)
+    {
+      Serial.println(F("BT_OR_WIFI_OPTION_PIN HIGH, Use WiFi"));
+      Blynk.begin(auth, ssid, pass);
+      USE_BT = false;
+    }
+    else
+    {
+      Serial.println(F("BT_OR_WIFI_OPTION_PIN LOW, Use BT"));
+      Blynk_BT.setDeviceName("ESP32_BT_WF");
+      Blynk_BT.begin(auth);
+    }
+  #endif
+  ...
+}
+
+void loop()
+{
+  if (USE_BT)
+    Blynk_BT.run();
+  else
+    Blynk.run();
+}
+```
+
+### Releases v1.0.0
+
+***Why this version***
+
+The Blynk ESP32 libraries for BlueTooth, BLE and WiFi, by design, can't coexist. So that when we'd like to use either WiFi or BlueTooth / BLE, it's not possible within the same sketch.
+With this libraries modifications, we now can compile with both options, then select one )(WiFi or BT/BLE) to run at run-time by pressing a switch.
+
+BLE is still not finished yet. Will update for next version.
+
+
+## Contributing
+
+If you want to contribute to this project:
+- Report bugs and errors
+- Ask for enhancements
+- Create issues and pull requests
+- Tell other people about this library
+
+## Copyright
+
+Copyright 2020- Khoi Hoang
