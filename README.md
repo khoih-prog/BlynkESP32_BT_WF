@@ -2,7 +2,7 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkESP32_BT_WF.svg?)](https://www.ardu-badge.com/BlynkESP32_BT_WF)
 
-To enable inclusion of both Blynk BT and WiFi libraries. Then select one to use at runtime.
+To enable inclusion of both Blynk BT / BLE and WiFi libraries. Then select one to use at runtime.
 
 
 ### Installation
@@ -22,7 +22,8 @@ Another way is to use `Arduino Library Manager`. Search for `BlynkSimpleEsp32_BT
 
 In your code, replace
 1. `BlynkSimpleEsp32_BT_WF.h` with `BlynkSimpleEsp32_BT_WF.h`
-2. `BlynkSimpleEsp32.h`       with `BlynkSimpleEsp32_WF.h`
+2. `BlynkSimpleEsp32_BLE.h`   with `BlynkSimpleEsp32_BLE_WF.h`
+3. `BlynkSimpleEsp32.h`       with `BlynkSimpleEsp32_WF.h`
 3. `Blynk.run();`             with `Blynk_BT.run()` for BlueTooth related function calls
 
 
@@ -92,8 +93,6 @@ void loop()
 
 The Blynk ESP32 libraries for BlueTooth, BLE and WiFi, by design, can't coexist. So that when we'd like to use either WiFi or BlueTooth / BLE, it's not possible within the same sketch.
 With this libraries modifications, we now can compile with both options, then select one )(WiFi or BT/BLE) to run at run-time by pressing a switch.
-
-BLE is still not finished yet. Will update for next version.
 
 
 ## Contributing
