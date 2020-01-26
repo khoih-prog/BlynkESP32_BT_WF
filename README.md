@@ -4,7 +4,6 @@
 
 To enable inclusion of both Blynk BT / BLE and WiFi libraries. Then select one to use at runtime.
 
-
 ### Installation
 
 The suggested way to install is to:
@@ -25,6 +24,7 @@ In your code, replace
 2. `BlynkSimpleEsp32_BLE.h`   with `BlynkSimpleEsp32_BLE_WF.h`
 3. `BlynkSimpleEsp32.h`       with `BlynkSimpleEsp32_WF.h`
 4. `Blynk.run();`             with `Blynk_BT.run()` for BlueTooth related function calls
+
 or 
 5. `Blynk.run();`             with `Blynk_BLE.run()` for BLE related function calls
 
@@ -94,8 +94,7 @@ void loop()
 ***Why this version***
 
 The Blynk ESP32 libraries for BlueTooth, BLE and WiFi, by design, can't coexist. So that when we'd like to use either WiFi or BlueTooth / BLE, it's not possible within the same sketch.
-With this libraries modifications, we now can compile with both options, then select one )(WiFi or BT/BLE) to run at run-time by pressing a switch.
-
+With this libraries modifications, we now can compile with both options, then select one (WiFi or BT/BLE) to run at run-time by pressing a switch.
 
 ## Contributing
 
