@@ -31,6 +31,8 @@ or
 
 That's it.
 
+Also see examples: 
+1. [Geiger_Counter](examples/Geiger_Counter)
 
 ## Prerequisite
 * `ESP32 core 1.0.4 or later`
