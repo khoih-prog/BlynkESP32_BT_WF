@@ -106,7 +106,7 @@ With this libraries modifications, we now can compile with both options, then se
 2. Optimize library so that smaller code size. Currently 2 instances of Blynk coexist and don't share code.
 
 ### Contributions and thanks
-1. Thanks to [Crosswalkersam]https://community.blynk.cc/u/Crosswalkersam) for the original code and request to inspire the work.
+1. Thanks to [Crosswalkersam](https://community.blynk.cc/u/Crosswalkersam) for the original code and request to inspire the work.
 
 ## Contributing
 
