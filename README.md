@@ -35,7 +35,7 @@ Also see examples:
 1. [Geiger_Counter](examples/Geiger_Counter)
 2. [Geiger_Counter_OLED](examples/Geiger_Counter_OLED)
 
-and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of  [Crosswalkersam](https://community.blynk.cc/u/Crosswalkersam)
+and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of  [Crosswalkersam](https://www.instructables.com/member/Crosswalkersam/)
 
 <p align="center">
     <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/examples/Geiger_Counter_OLED/pics/Box1.jpg">
