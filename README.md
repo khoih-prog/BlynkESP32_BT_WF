@@ -99,6 +99,15 @@ void loop()
 The Blynk ESP32 libraries for BlueTooth, BLE and WiFi, by design, can't coexist. So that when we'd like to use either WiFi or BlueTooth / BLE, it's not possible within the same sketch.
 With this libraries modifications, we now can compile with both options, then select one (WiFi or BT/BLE) to run at run-time by pressing a switch.
 
+
+## TO DO
+
+1. Same features for other boards with WiFi / BT
+2. Optimize library so that smaller code size. Currently 2 instances of Blynk coexist and don't share code.
+
+### Contributions and thanks
+1. Thanks to [Crosswalkersam]https://community.blynk.cc/u/Crosswalkersam) for the original code and request to inspire the work.
+
 ## Contributing
 
 If you want to contribute to this project:
