@@ -35,6 +35,8 @@ Also see examples:
 1. [Geiger_Counter](examples/Geiger_Counter)
 1. [Geiger_Counter_OLED](examples/Geiger_Counter_OLED)
 
+and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of  [Crosswalkersam](https://community.blynk.cc/u/Crosswalkersam)
+
 ## Prerequisite
 * `ESP32 core 1.0.4 or later`
 * `Blynk library 0.6.1 or later` (https://www.arduino.cc/en/guide/libraries#toc3)
