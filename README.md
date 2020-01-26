@@ -37,10 +37,10 @@ Also see examples:
 
 and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of  [Crosswalkersam](https://community.blynk.cc/u/Crosswalkersam)
 
-(examples/Geiger_Counter_OLED/pics/Box1.jpg)
-(examples/Geiger_Counter_OLED/pics/Box1.jpg)
-(examples/Geiger_Counter_OLED/pics/Blynk.jpg)
-(examples/Geiger_Counter_OLED/pics/Schematics.jpg)
+examples/Geiger_Counter_OLED/pics/Box1.jpg
+examples/Geiger_Counter_OLED/pics/Box1.jpg
+examples/Geiger_Counter_OLED/pics/Blynk.jpg
+examples/Geiger_Counter_OLED/pics/Schematics.jpg
 
 ## Prerequisite
 * `ESP32 core 1.0.4 or later`
