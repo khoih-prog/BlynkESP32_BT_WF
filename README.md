@@ -69,7 +69,7 @@ void setup()
     if (digitalRead(BT_OR_WIFI_OPTION_PIN) == HIGH)
     {
       Serial.println(F("BT_OR_WIFI_OPTION_PIN HIGH, Use WiFi"));
-      Blynk.begin(auth, ssid, pass);
+      Blynk_WF.begin(auth, ssid, pass);
       USE_BT = false;
     }
     else
@@ -87,7 +87,7 @@ void loop()
   if (USE_BT)
     Blynk_BT.run();
   else
-    Blynk.run();
+    Blynk_WF.run();
 }
 ```
 
