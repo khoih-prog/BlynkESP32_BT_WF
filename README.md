@@ -2,7 +2,7 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkESP32_BT_WF.svg?)](https://www.ardu-badge.com/BlynkESP32_BT_WF)
 
-To enable inclusion of both Blynk BT / BLE and WiFi libraries. Then select one to use at runtime.
+By design, Blynk user can run ESP32 boards with either WiFi or BT/BLE by using different sketches, and have to upload / update firmware to change. This library enables user to  include both Blynk BT / BLE and WiFi libraries in one sketch, then select one to use at runtime after reboot.
 
 ### Installation
 
