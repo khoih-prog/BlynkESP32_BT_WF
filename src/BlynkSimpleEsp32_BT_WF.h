@@ -1,5 +1,32 @@
-#ifndef BlynkSimpleEsp32_BT_W_h
+/****************************************************************************************************************************
+ * BlynkSimpleEsp32_BT_WF.h
+ * For ESP32 using BlueTooth along with WiFi
+ *
+ * Library for inclusion of both ESP32 Blynk BT / BLE and WiFi libraries. Then select one at runtime.
+ * Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+ * Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+ * Licensed under MIT license
+ * Version: 1.0.0
+ *
+ * Original Blynk Library author:
+ * @file       BlynkSimpleESP32.h
+ * @author     Volodymyr Shymanskyy
+ * @license    This project is released under the MIT License (MIT)
+ * @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
+ * @date       Nov 2017
+ * @brief
+ *
+ * Version Modified By   Date      Comments
+ * ------- -----------  ---------- -----------
+ *  1.0.0   K Hoang      25/01/2020 Initial coding
+ *****************************************************************************************************************************/
+
+#ifndef BlynkSimpleEsp32_BT_WF_h
 #define BlynkSimpleEsp32_BT_WF_h
+
+#ifndef ESP32
+#error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
+#endif
 
 #ifndef BLYNK_INFO_CONNECTION
 #define BLYNK_INFO_CONNECTION "ESP32_BT"
