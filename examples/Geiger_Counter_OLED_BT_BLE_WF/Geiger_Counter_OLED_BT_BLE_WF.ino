@@ -1,12 +1,12 @@
 /****************************************************************************************************************************
  *  Geiger_Counter_OLED_BT_BLE_WF.ino
- *  For ESP32 using WiFi and BlueTooth simultaneously
+ *  For ESP32 using WiFi and BlueTooth/BLE simultaneously
  *
  *  Library for inclusion of both ESP32 Blynk BT or BLE and WiFi libraries and run WiFi and BT/BLE simultaneously
  *  Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
  *  Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
  *  Licensed under MIT license
- *  Version: 1.0.0
+ *  Version: 1.0.1
  *
  *  Based on orignal code by Crosswalkersam (https://community.blynk.cc/u/Crosswalkersam)
  *  posted in https://community.blynk.cc/t/select-connection-type-via-switch/43176
@@ -71,7 +71,6 @@ char BLE_auth[]    = "BLE_token";
 #define VOLTAGE_FACTOR                ( ( 4.2 * (3667 / 3300) ) / 4096 )
 
 float voltage               = 0;
-long  count                 = 0;
 long  countPerMinute        = 0;
 long  timePrevious          = 0;
 long  timePreviousMeassure  = 0;
@@ -82,6 +81,7 @@ float radiationDose         = 0;
 
 void IRAM_ATTR countPulse();
 volatile unsigned long last_micros;
+volatile long          count = 0;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET_PIN);
 BlynkTimer timer;
@@ -90,14 +90,9 @@ void IRAM_ATTR countPulse()
 {
   if ((long)(micros() - last_micros) >= DEBOUNCE_TIME_MICRO_SEC)
   {
-    Pulse();
+    count++;
     last_micros = micros();
   }
-}
-
-void Pulse()
-{
-  count++;
 }
 
 void sendDatatoBlynk()
@@ -116,7 +111,7 @@ void sendDatatoBlynk()
     Blynk_BT.virtualWrite(V7, voltage);
   #endif
   
-  // For WiFielse
+  // For WiFi
   Blynk_WF.virtualWrite(V1, countPerMinute);
   Blynk_WF.virtualWrite(V3, radiationValue);
   Blynk_WF.virtualWrite(V5, radiationDose);
@@ -126,17 +121,18 @@ void sendDatatoBlynk()
 
 void Serial_Display()
 {
-  Serial.print("cpm = ");
-  Serial.print(countPerMinute, DEC);
-  Serial.print(" - ");
-  Serial.print("RadiationValue = ");
-  Serial.print(radiationValue, 2);
-  Serial.print("uSv/h");
-  Serial.print(" - ");
-  Serial.print("Equivalent RadiationDose = ");
-  Serial.print(radiationDose, 4);
-  Serial.println("uSv");
+  Serial.print(F("cpm = "));
+  Serial.printf("%4d", countPerMinute);
+  Serial.print(F(" - "));
+  Serial.print(F("RadiationValue = "));
+  Serial.printf("%5.3f", radiationValue);
+  Serial.print(F(" uSv/h"));
+  Serial.print(F(" - "));
+  Serial.print(F("Equivalent RadiationDose = "));
+  Serial.printf("%6.4f", radiationDose);
+  Serial.println(F(" uSv"));
 }
+
 
 void OLED_Display()
 {
@@ -173,6 +169,8 @@ void OLED_Display()
   display.display();
 }
 
+#define USE_SIMULATION    true
+
 void checkStatus()
 {
   static float voltage;
@@ -180,7 +178,11 @@ void checkStatus()
   if (millis() - timePreviousMeassure > MEASURE_INTERVAL_MS)
   {
     timePreviousMeassure = millis();
+
+    noInterrupts();
     countPerMinute = COUNT_PER_MIN_CONVERSION * count;
+    interrupts();
+    
     radiationValue = countPerMinute * CONV_FACTOR;
     radiationDose = radiationDose + (radiationValue / float(240.0));
 
@@ -195,15 +197,22 @@ void checkStatus()
     Serial_Display();
     OLED_Display();
 
-    count = 0;
+    #if USE_SIMULATION
+      count += 10;
+      if (count >= 1000)
+        count = 0;
+    #else  
+      count = 0;
+    #endif
   }
 }
 
 void setup()
 {
-  pinMode(GEIGER_INPUT_PIN, INPUT);
-
   Serial.begin(115200);
+  Serial.println(F("\nStarting Geiger-Counter-OLED-BT-BLE-WF"));
+
+  pinMode(GEIGER_INPUT_PIN, INPUT);
   attachInterrupt(GEIGER_INPUT_PIN, countPulse, HIGH);
 
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {

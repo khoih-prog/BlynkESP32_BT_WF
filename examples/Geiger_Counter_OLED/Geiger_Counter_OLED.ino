@@ -1,22 +1,24 @@
 /****************************************************************************************************************************
-   Geiger_Counter_OLED.ino
-   For ESP32 using WiFi along with BlueTooth
-
-   Library for inclusion of both ESP32 Blynk BT and WiFi libraries. Then select one at runtime.
-   Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
-   Licensed under MIT license
-   Version: 1.0.0
-
-   Based on orignal code by Crosswalkersam (https://community.blynk.cc/u/Crosswalkersam)
-   posted in https://community.blynk.cc/t/select-connection-type-via-switch/43176
-   Purpose: Use WiFi when posible by GPIO14 => HIGH or floating when reset.
-            Use Bluetooth when WiFi not available (such as in the field) by by GPIO14 => LOW when reset.
-
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      25/01/2020 Initial coding
+ *  Geiger_Counter_OLED.ino
+ *  For ESP32 using WiFi and BlueTooth simultaneously
+ *
+ *  Library for inclusion of both ESP32 Blynk BT or BLE and WiFi libraries and run WiFi and BT/BLE simultaneously
+ *  Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+ *  Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+ *  Licensed under MIT license
+ *  Version: 1.0.1
+ *
+ *  Based on orignal code by Crosswalkersam (https://community.blynk.cc/u/Crosswalkersam)
+ *  posted in https://community.blynk.cc/t/select-connection-type-via-switch/43176
+ *  Purpose: Use WiFi when posible by GPIO14 => HIGH or floating when reset.
+ *           Use Bluetooth when WiFi not available (such as in the field) by by GPIO14 => LOW when reset.
+ *
+ *  Version Modified By   Date      Comments
+ *  ------- -----------  ---------- -----------
+ *  1.0.0   K Hoang      25/01/2020 Initial coding
+ *  1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
  *****************************************************************************************************************************/
+
 
 #define BLYNK_PRINT Serial
 
@@ -33,6 +35,19 @@
 #include <BlynkSimpleEsp32_BT_WF.h>
 #include <BlynkSimpleEsp32_WF.h>
 
+char ssid[] = "SSID";
+char pass[] = "PASS";
+#endif
+
+String cloudBlynkServer = "account.duckdns.org";
+//String cloudBlynkServer = "192.168.2.110";
+#define BLYNK_SERVER_HARDWARE_PORT    8080
+
+// Blynk token shared between BT and WiFi
+char auth[] = "****";
+
+bool USE_BT = true;
+
 #define WIFI_BT_SELECTION_PIN     14   //Pin D14 mapped to pin GPIO14/HSPI_SCK/ADC16/TOUCH6/TMS of ESP32
 #define GEIGER_INPUT_PIN          18   // Pin D18 mapped to pin GPIO18/VSPI_SCK of ESP32
 #define VOLTAGER_INPUT_PIN        36   // Pin D36 mapped to pin GPIO36/ADC0/SVP of ESP32  
@@ -42,16 +57,6 @@
 #define SCREEN_WIDTH              128
 #define SCREEN_HEIGHT             32
 
-
-char ssid[] = "SSID";
-char pass[] = "PASS";
-#endif
-
-// Blynk token shared between BT and WiFi
-char auth[] = "****";
-
-bool USE_BT = true;
-
 #define CONV_FACTOR                   0.00658
 
 #define DEBOUNCE_TIME_MICRO_SEC       4200L
@@ -60,7 +65,6 @@ bool USE_BT = true;
 #define VOLTAGE_FACTOR                ( ( 4.2 * (3667 / 3300) ) / 4096 )
 
 float voltage               = 0;
-long  count                 = 0;
 long  countPerMinute        = 0;
 long  timePrevious          = 0;
 long  timePreviousMeassure  = 0;
@@ -71,6 +75,7 @@ float radiationDose         = 0;
 
 void IRAM_ATTR countPulse();
 volatile unsigned long last_micros;
+volatile long          count = 0;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET_PIN);
 BlynkTimer timer;
@@ -79,14 +84,9 @@ void IRAM_ATTR countPulse()
 {
   if ((long)(micros() - last_micros) >= DEBOUNCE_TIME_MICRO_SEC)
   {
-    Pulse();
+    count++;
     last_micros = micros();
   }
-}
-
-void Pulse()
-{
-  count++;
 }
 
 void sendDatatoBlynk()
@@ -109,16 +109,16 @@ void sendDatatoBlynk()
 
 void Serial_Display()
 {
-  Serial.print("cpm = ");
-  Serial.print(countPerMinute, DEC);
-  Serial.print(" - ");
-  Serial.print("RadiationValue = ");
-  Serial.print(radiationValue, 2);
-  Serial.print("uSv/h");
-  Serial.print(" - ");
-  Serial.print("Equivalent RadiationDose = ");
-  Serial.print(radiationDose, 4);
-  Serial.println("uSv");
+  Serial.print(F("cpm = "));
+  Serial.printf("%4d", countPerMinute);
+  Serial.print(F(" - "));
+  Serial.print(F("RadiationValue = "));
+  Serial.printf("%5.3f", radiationValue);
+  Serial.print(F(" uSv/h"));
+  Serial.print(F(" - "));
+  Serial.print(F("Equivalent RadiationDose = "));
+  Serial.printf("%6.4f", radiationDose);
+  Serial.println(F(" uSv"));
 }
 
 void OLED_Display()
@@ -156,6 +156,8 @@ void OLED_Display()
   display.display();
 }
 
+#define USE_SIMULATION    false
+
 void checkStatus()
 {
   static float voltage;
@@ -163,7 +165,11 @@ void checkStatus()
   if (millis() - timePreviousMeassure > MEASURE_INTERVAL_MS)
   {
     timePreviousMeassure = millis();
+    
+    noInterrupts();
     countPerMinute = COUNT_PER_MIN_CONVERSION * count;
+    interrupts();
+    
     radiationValue = countPerMinute * CONV_FACTOR;
     radiationDose = radiationDose + (radiationValue / float(240.0));
 
@@ -178,15 +184,22 @@ void checkStatus()
     Serial_Display();
     OLED_Display();
     
-    count = 0;
+    #if USE_SIMULATION
+      count += 10;
+      if (count >= 1000)
+        count = 0;
+    #else  
+      count = 0;
+    #endif
   }
 }
 
 void setup()
 {
-  pinMode(GEIGER_INPUT_PIN, INPUT);
-
   Serial.begin(115200);
+  Serial.println(F("\nStarting Geiger-Counter-OLED"));
+
+  pinMode(GEIGER_INPUT_PIN, INPUT);
   attachInterrupt(GEIGER_INPUT_PIN, countPulse, HIGH);
 
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
@@ -204,7 +217,8 @@ void setup()
   if (digitalRead(WIFI_BT_SELECTION_PIN) == HIGH)
   {
     Serial.println(F("GPIO14 HIGH, Use WiFi"));
-    Blynk_WF.begin(auth, ssid, pass);
+    //Blynk_WF.begin(auth, ssid, pass);
+    Blynk_WF.begin(auth, ssid, pass, cloudBlynkServer.c_str(), BLYNK_SERVER_HARDWARE_PORT);
     USE_BT = false;
   }
   else
