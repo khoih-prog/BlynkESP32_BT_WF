@@ -147,7 +147,7 @@ cpm = 0 - RadiationValue = 0.00uSv/h - Equivalent RadiationDose = 0.0000uSv
 ***Why this version***
 
 The Blynk ESP32 libraries for BlueTooth, BLE and WiFi, by design, can't coexist. So that when we'd like to use either WiFi or BlueTooth / BLE, it's not possible within the same sketch.
-With this libraries modifications, we now can compile with both options, then select one (WiFi or BT/BLE) to run at run-time by pressing a switch.
+This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot by pressing a switch.
 
 
 ## TO DO
