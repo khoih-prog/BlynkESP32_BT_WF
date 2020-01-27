@@ -35,6 +35,7 @@ Also see examples:
 1. [Geiger_Counter](examples/Geiger_Counter)
 2. [Geiger_Counter_OLED](examples/Geiger_Counter_OLED)
 3. [Geiger_Counter_OLED_BT_WF](examples/Geiger_Counter_OLED_BT_WF)
+4. [Geiger_Counter_OLED_BT_BLE_WF](examples/Geiger_Counter_OLED_BT_BLE_WF)
 
 and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of  [Crosswalkersam](https://www.instructables.com/member/Crosswalkersam/)
 
