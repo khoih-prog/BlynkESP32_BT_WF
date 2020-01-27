@@ -2,7 +2,7 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkESP32_BT_WF.svg?)](https://www.ardu-badge.com/BlynkESP32_BT_WF)
 
-By design, Blynk user can run ESP32 boards with either WiFi or BT/BLE by using different sketches, and have to upload / update firmware to change. This library enables user to  include both Blynk BT / BLE and WiFi libraries in one sketch, then select one to use at runtime after reboot.
+By design, Blynk user can run ESP32 boards with either WiFi or BT/BLE by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot.
 
 ### Installation
 
@@ -23,10 +23,10 @@ In your code, replace
 1. `BlynkSimpleEsp32_BT_WF.h` with `BlynkSimpleEsp32_BT_WF.h`
 2. `BlynkSimpleEsp32_BLE.h`   with `BlynkSimpleEsp32_BLE_WF.h`
 3. `BlynkSimpleEsp32.h`       with `BlynkSimpleEsp32_WF.h`
-4. `Blynk.run();`             with `Blynk_BT.run()` for BlueTooth related function calls
-
+4. `Blynk.run();`             with `Blynk_WF.run()` for WiFi related function calls
+5. `Blynk.run();`             with `Blynk_BT.run()` for BlueTooth related function calls
 or 
-5. `Blynk.run();`             with `Blynk_BLE.run()` for BLE related function calls
+6. `Blynk.run();`             with `Blynk_BLE.run()` for BLE related function calls
 
 
 That's it.
@@ -34,6 +34,7 @@ That's it.
 Also see examples: 
 1. [Geiger_Counter](examples/Geiger_Counter)
 2. [Geiger_Counter_OLED](examples/Geiger_Counter_OLED)
+3. [Geiger_Counter_OLED_BT_WF](examples/Geiger_Counter_OLED_BT_WF)
 
 and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of  [Crosswalkersam](https://www.instructables.com/member/Crosswalkersam/)
 
@@ -108,6 +109,37 @@ void loop()
   else
     Blynk_WF.run();
 }
+```
+
+and this is the terminal debug output when running both WiFi and BT at the same time using example  [Geiger_Counter_OLED_BT_WF](examples/Geiger_Counter_OLED_BT_WF)
+
+```
+Use WiFi to connect Blynk
+[251] Connecting to HueNet1
+[2412] Connected to WiFi
+[2412] IP: 192.168.2.109
+[2412] 
+    ___  __          __
+   / _ )/ /_ _____  / /__
+  / _  / / // / _ \/  '_/
+ /____/_/\_, /_//_/_/\_\
+        /___/ v0.6.1 on ESP32
+
+[2418] BlynkArduinoClient.connect: Connecting to account.duckdns.org:8080
+[2524] Ready (ping: 6ms).
+Use BT to connect Blynk
+[2594] 
+    ___  __          __
+   / _ )/ /_ _____  / /__
+  / _  / / // / _ \/  '_/
+ /____/_/\_, /_//_/_/\_\
+        /___/ v0.6.1 on ESP32
+
+cpm = 0 - RadiationValue = 0.00uSv/h - Equivalent RadiationDose = 0.0000uSv
+[25805] BT connect
+[25831] Ready (ping: 25ms).
+cpm = 0 - RadiationValue = 0.00uSv/h - Equivalent RadiationDose = 0.0000uSv
+
 ```
 
 ### Releases v1.0.0
