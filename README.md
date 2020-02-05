@@ -16,7 +16,7 @@ The suggested and easiest way is to use `Arduino Library Manager`. Search for `B
 
 The suggested way to install manually is to:
 
-1. Navigate to [BlynkESP32_BT_WF] (https://github.com/khoih-prog/BlynkESP32_BT_WF) page.
+1. Navigate to [BlynkESP32_BT_WF](https://github.com/khoih-prog/BlynkESP32_BT_WF) page.
 2. Download the latest release `BlynkESP32_BT_WF-master.zip`.
 3. Extract the zip file to `BlynkESP32_BT_WF-master` directory 
 4. Copy whole `BlynkESP32_BT_WF-master` folder to Arduino libraries' directory such as `~/Arduino/libraries`.
@@ -252,7 +252,7 @@ Connecting Blynk via BLE, using auth = ****
 ***Why this version***
 
 This new version enables user to eliminate `hardcoding` your Wifi and Blynk credentials, thanks to the `Smart Config Portal`, and have Credentials (WiFi SID/PW, Blynk WiFi/BT/BLE Tokens/ Hardware Port) saved in either SPIFFS or EEPROM.
-See more info at [Blynk_WM] (https://github.com/khoih-prog/Blynk_WM)
+See more info at [Blynk_WM](https://github.com/khoih-prog/Blynk_WM)
 
 ### Releases v1.0.1
 
