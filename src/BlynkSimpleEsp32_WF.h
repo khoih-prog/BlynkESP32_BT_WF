@@ -6,7 +6,7 @@
  * Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
  * Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
  * Licensed under MIT license
- * Version: 1.0.1
+ * Version: 1.0.2
  *
  * Original Blynk Library author:
  * @file       BlynkSimpleESP32.h
@@ -20,6 +20,7 @@
  * ------- -----------  ---------- -----------
  *  1.0.0   K Hoang      25/01/2020 Initial coding
  *  1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
+ *  1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleEsp32_WF_h
@@ -30,6 +31,9 @@
 #endif
 
 #define BLYNK_SEND_ATOMIC
+
+// KH
+#define BLYNK_TIMEOUT_MS     30000UL
 
 #include <BlynkApiArduino.h>
 #include <Blynk/BlynkProtocol.h>
