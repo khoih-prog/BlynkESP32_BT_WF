@@ -44,7 +44,7 @@ Steps to reproduce:
 
 Feel free to post feature requests. It's helpful if you can explain exactly why the feature would be useful.
 
-There are usually some outstanding feature requests in the [existing issues list](https://github.com/khoih-prog/Blynk_WM/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement), feel free to add comments to them.
+There are usually some outstanding feature requests in the [existing issues list](https://github.com/khoih-prog/BlynkESP32_BT_WF/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement), feel free to add comments to them.
 
 ### Sending Pull Requests
 
