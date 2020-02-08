@@ -56,7 +56,7 @@ Also see examples:
 6. [Geiger_Counter_OLED_BT_WF](examples/Geiger_Counter_OLED_BT_WF)
 7. [Geiger_Counter_OLED_BT_BLE_WF](examples/Geiger_Counter_OLED_BT_BLE_WF)
 
-and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of  [Crosswalkersam](https://www.instructables.com/member/Crosswalkersam/)
+and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of [Crosswalkersam](https://www.instructables.com/member/Crosswalkersam/)
 
 <p align="center">
     <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/examples/Geiger_Counter_OLED/pics/Box1.jpg">
@@ -92,8 +92,8 @@ Enter your credentials, then click `Save`. After you restarted, you will see you
 
 
 ## Prerequisite
-* `ESP32 core 1.0.4 or later`
-* `Blynk library 0.6.1 or later` (https://www.arduino.cc/en/guide/libraries#toc3)
+* Release `1.0.4` or newer of the [ESP32 core for Arduino](https://github.com/espressif/arduino-esp32)
+* [`Blynk library 0.6.1 or later`](https://github.com/blynkkk/blynk-library/releases)
 
 ## Sample code
 ```
