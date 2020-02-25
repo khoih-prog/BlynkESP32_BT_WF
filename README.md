@@ -56,7 +56,7 @@ Also see examples:
 6. [Geiger_Counter_OLED_BT_WF](examples/Geiger_Counter_OLED_BT_WF)
 7. [Geiger_Counter_OLED_BT_BLE_WF](examples/Geiger_Counter_OLED_BT_BLE_WF)
 
-and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of [Crosswalkersam](https://www.instructables.com/member/Crosswalkersam/)
+and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of  [Crosswalkersam](https://www.instructables.com/member/Crosswalkersam/)
 
 <p align="center">
     <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/examples/Geiger_Counter_OLED/pics/Box1.jpg">
@@ -92,8 +92,8 @@ Enter your credentials, then click `Save`. After you restarted, you will see you
 
 
 ## Prerequisite
-* Release `1.0.4` or newer of the [ESP32 core for Arduino](https://github.com/espressif/arduino-esp32)
-* [`Blynk library 0.6.1 or later`](https://github.com/blynkkk/blynk-library/releases)
+* `ESP32 core 1.0.4 or later`
+* `Blynk library 0.6.1 or later` (https://www.arduino.cc/en/guide/libraries#toc3)
 
 ## Sample code
 ```
@@ -208,28 +208,68 @@ void loop()
 }
 ```
 
-and this is the terminal debug output when running both WiFi and BT at the same time using example  [ESP32_BLE_WF](examples/ESP32_BLE_WF)
+and this is the terminal debug output when running both WiFi and BT at the same time using example  [Geiger_Counter_OLED_BT_BLE_WF](examples/Geiger_Counter_OLED_BT_BLE_WF)
 
 ```
 
-Starting ESP32_BLE_WF
-GPIO14 LOW, Use BLE
-[51] Load configfile 
-[52] OK
-[52] Header = ESP32_WFM, SSID = ***, PW = ***
-[52] Server = account.duckdns.org, Port = 8080, Token = ****
-[56] BT Token = ****, BLE Token = ****
-[64] Board Name = Geiger-OLED-BLE-BT
-Connecting Blynk via BLE, using auth = ****
-[149] 
+
+Starting Geiger-Counter-OLED-BT-BLE-WF
+Use WiFi to connect Blynk
+[332] RFC925 Hostname = GeigerCounter-WiFi
+[338] Calc Cksum = 0x3446, Read Cksum = 0x3446
+[338] Header = ESP32_WFM, SSID = ****, PW = ****
+[338] Server = ****.duckdns.org, Port = 8080, Token = ****
+[344] BT Token = ****, BLE Token = ****
+[352] Board Name = ESP32-BLE-WF
+[355] 
     ___  __          __
    / _ )/ /_ _____  / /__
   / _  / / // / _ \/  '_/
  /____/_/\_, /_//_/_/\_\
         /___/ v0.6.1 on ESP32
 
-[75491] BLE connect
-[77327] Ready
+[371] con2WF: start
+[1872] con2WF: con OK
+[1872] IP = 192.168.2.92, GW = 192.168.2.1, SN = 255.255.0.0
+[1872] DNS1 = 192.168.2.1, DNS2 = 0.0.0.0
+[1872] bg: WiFi connected. Try Blynk
+[1875] BlynkArduinoClient.connect: Connecting to ****.duckdns.org:8080
+[1956] Ready (ping: 42ms).
+[2026] bg: WiFi+Blynk connected
+Use BLE to connect Blynk
+BLE_auth = ****
+[2027] 
+    ___  __          __
+   / _ )/ /_ _____  / /__
+  / _  / / // / _ \/  '_/
+ /____/_/\_, /_//_/_/\_\
+        /___/ v0.6.1 on ESP32
+
+[14199] BLE connect
+[15191] Ready
+cpm =    0 - RadiationValue = 0.000 uSv/h - Equivalent RadiationDose = 0.0000 uSv
+cpm =   30 - RadiationValue = 0.197 uSv/h - Equivalent RadiationDose = 0.0008 uSv
+cpm =   60 - RadiationValue = 0.395 uSv/h - Equivalent RadiationDose = 0.0025 uSv
+cpm =   90 - RadiationValue = 0.592 uSv/h - Equivalent RadiationDose = 0.0049 uSv
+cpm =  120 - RadiationValue = 0.790 uSv/h - Equivalent RadiationDose = 0.0082 uSv
+cpm =  150 - RadiationValue = 0.987 uSv/h - Equivalent RadiationDose = 0.0123 uSv
+cpm =  180 - RadiationValue = 1.184 uSv/h - Equivalent RadiationDose = 0.0173 uSv
+cpm =  210 - RadiationValue = 1.382 uSv/h - Equivalent RadiationDose = 0.0230 uSv
+cpm =  240 - RadiationValue = 1.579 uSv/h - Equivalent RadiationDose = 0.0296 uSv
+cpm =  270 - RadiationValue = 1.777 uSv/h - Equivalent RadiationDose = 0.0370 uSv
+cpm =  300 - RadiationValue = 1.974 uSv/h - Equivalent RadiationDose = 0.0452 uSv
+cpm =  330 - RadiationValue = 2.171 uSv/h - Equivalent RadiationDose = 0.0543 uSv
+cpm =  360 - RadiationValue = 2.369 uSv/h - Equivalent RadiationDose = 0.0642 uSv
+cpm =  390 - RadiationValue = 2.566 uSv/h - Equivalent RadiationDose = 0.0748 uSv
+cpm =  420 - RadiationValue = 2.764 uSv/h - Equivalent RadiationDose = 0.0864 uSv
+cpm =  450 - RadiationValue = 2.961 uSv/h - Equivalent RadiationDose = 0.0987 uSv
+cpm =  480 - RadiationValue = 3.158 uSv/h - Equivalent RadiationDose = 0.1119 uSv
+cpm =  510 - RadiationValue = 3.356 uSv/h - Equivalent RadiationDose = 0.1258 uSv
+cpm =  540 - RadiationValue = 3.553 uSv/h - Equivalent RadiationDose = 0.1406 uSv
+cpm =  570 - RadiationValue = 3.751 uSv/h - Equivalent RadiationDose = 0.1563 uSv
+cpm =  600 - RadiationValue = 3.948 uSv/h - Equivalent RadiationDose = 0.1727 uSv
+cpm =  630 - RadiationValue = 4.145 uSv/h - Equivalent RadiationDose = 0.1900 uSv
+
 
 ```
 
@@ -246,6 +286,15 @@ Connecting Blynk via BLE, using auth = ****
   9. Add configurable Static IP, GW, Subnet Mask and 2 DNS Servers' IP Addresses.
  10. Use dynamically alocated Config Portal WebServer
  11. Fix BT/BLE login timeout
+ 12. Add checksum for config data integrity
+ 13. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
+
+### Releases v1.0.3
+
+***Why this version***
+
+1. Add checksum for config data integrity.
+2. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
  
 ### Releases v1.0.2
 

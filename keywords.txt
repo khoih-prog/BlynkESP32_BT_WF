@@ -48,6 +48,7 @@ getBlynkBLEToken  KEYWORD2
 getBoardName  KEYWORD2
 getHWPort KEYWORD2
 getFullConfigData KEYWORD2
+clearConfigData KEYWORD2
 
 # Handler helpers
 BLYNK_READ	KEYWORD2
