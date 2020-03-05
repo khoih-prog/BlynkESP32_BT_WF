@@ -1,27 +1,27 @@
 /****************************************************************************************************************************
- * BlynkSimpleEsp32_BLE_WF.h
- * For ESP32 using BLE along with WiFi
- *
- * Library for inclusion of both ESP32 Blynk BT and WiFi libraries. Then select one at runtime.
- * Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
- * Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
- * Licensed under MIT license
- * Version: 1.0.3
- *
- * Original Blynk Library author:
- * @file       BlynkSimpleESP32.h
- * @author     Volodymyr Shymanskyy
- * @license    This project is released under the MIT License (MIT)
- * @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
- * @date       Oct 2016
- * @brief
- *
- * Version Modified By   Date      Comments
- * ------- -----------  ---------- -----------
- *  1.0.0   K Hoang      25/01/2020 Initial coding
- *  1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
- *  1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
- *  1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
+   BlynkSimpleEsp32_BLE_WF.h
+   For ESP32 using BLE along with WiFi
+
+   Library for inclusion of both ESP32 Blynk BT and WiFi libraries. Then select one at runtime.
+   Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+   Licensed under MIT license
+   Version: 1.0.3
+
+   Original Blynk Library author:
+   @file       BlynkSimpleESP32.h
+   @author     Volodymyr Shymanskyy
+   @license    This project is released under the MIT License (MIT)
+   @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
+   @date       Oct 2016
+   @brief
+
+   Version Modified By   Date      Comments
+   ------- -----------  ---------- -----------
+    1.0.0   K Hoang      25/01/2020 Initial coding
+    1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
+    1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
+    1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleEsp32_BLE_WF_h
@@ -56,95 +56,95 @@
 #define CHARACTERISTIC_UUID_TX "713D0002-503E-4C75-BA94-3148F18D941E"
 
 class BlynkTransportEsp32_BLE :
-    public BLEServerCallbacks,
-    public BLECharacteristicCallbacks
+  public BLEServerCallbacks,
+  public BLECharacteristicCallbacks
 {
 
-public:
+  public:
     BlynkTransportEsp32_BLE()
-        : mConn (false)
-        , mName ("Blynk")
+      : mConn (false)
+      , mName ("Blynk")
     {}
 
     void setDeviceName(const char* name) {
-        mName = name;
+      mName = name;
     }
 
     // IP redirect not available
     void begin(char BLYNK_UNUSED *h, uint16_t BLYNK_UNUSED p) {}
 
     void begin() {
-        // Create the BLE Device
-        BLEDevice::init(mName);
+      // Create the BLE Device
+      BLEDevice::init(mName);
 
-        // Create the BLE Server
-        pServer = BLEDevice::createServer();
-        pServer->setCallbacks(this);
+      // Create the BLE Server
+      pServer = BLEDevice::createServer();
+      pServer->setCallbacks(this);
 
-        // Create the BLE Service
-        pService = pServer->createService(SERVICE_UUID);
+      // Create the BLE Service
+      pService = pServer->createService(SERVICE_UUID);
 
-        // Create a BLE Characteristic
-        pCharacteristicTX = pService->createCharacteristic(
+      // Create a BLE Characteristic
+      pCharacteristicTX = pService->createCharacteristic(
                             CHARACTERISTIC_UUID_TX,
                             BLECharacteristic::PROPERTY_NOTIFY
                           );
 
-        pCharacteristicTX->addDescriptor(new BLE2902());
+      pCharacteristicTX->addDescriptor(new BLE2902());
 
-        pCharacteristicRX = pService->createCharacteristic(
-                                              CHARACTERISTIC_UUID_RX,
-                                              BLECharacteristic::PROPERTY_WRITE
-                                            );
+      pCharacteristicRX = pService->createCharacteristic(
+                            CHARACTERISTIC_UUID_RX,
+                            BLECharacteristic::PROPERTY_WRITE
+                          );
 
-        pCharacteristicRX->setCallbacks(this);
+      pCharacteristicRX->setCallbacks(this);
 
-        // Start the service
-        pService->start();
+      // Start the service
+      pService->start();
 
-        // Start advertising
-        pServer->getAdvertising()->addServiceUUID(pService->getUUID());
-        pServer->getAdvertising()->start();
+      // Start advertising
+      pServer->getAdvertising()->addServiceUUID(pService->getUUID());
+      pServer->getAdvertising()->start();
     }
 
     bool connect() {
-        mBuffRX.clear();
-        return mConn = true;
+      mBuffRX.clear();
+      return mConn = true;
     }
 
     void disconnect() {
-        mConn = false;
+      mConn = false;
     }
 
     bool connected() {
-        return mConn;
+      return mConn;
     }
 
     size_t read(void* buf, size_t len) {
-        millis_time_t start = BlynkMillis();
-        while (BlynkMillis() - start < BLYNK_TIMEOUT_MS) {
-            if (available() < len) {
-                delay(1);
-            } else {
-                break;
-            }
+      millis_time_t start = BlynkMillis();
+      while (BlynkMillis() - start < BLYNK_TIMEOUT_MS) {
+        if (available() < len) {
+          delay(1);
+        } else {
+          break;
         }
-        size_t res = mBuffRX.get((uint8_t*)buf, len);
-        return res;
+      }
+      size_t res = mBuffRX.get((uint8_t*)buf, len);
+      return res;
     }
 
     size_t write(const void* buf, size_t len) {
-        pCharacteristicTX->setValue((uint8_t*)buf, len);
-        pCharacteristicTX->notify();
-        return len;
+      pCharacteristicTX->setValue((uint8_t*)buf, len);
+      pCharacteristicTX->notify();
+      return len;
     }
 
     size_t available() {
-        size_t rxSize = mBuffRX.size();
-        return rxSize;
+      size_t rxSize = mBuffRX.size();
+      return rxSize;
     }
 
-private:
+  private:
 
     void onConnect(BLEServer* pServer);
     void onDisconnect(BLEServer* pServer);
@@ -161,7 +161,7 @@ private:
       }
     }
 
-private:
+  private:
     bool mConn;
     const char* mName;
 
@@ -170,28 +170,28 @@ private:
     BLECharacteristic *pCharacteristicTX;
     BLECharacteristic *pCharacteristicRX;
 
-    BlynkFifo<uint8_t, BLYNK_MAX_READBYTES*2> mBuffRX;
+    BlynkFifo<uint8_t, BLYNK_MAX_READBYTES * 2> mBuffRX;
 };
 
 class BlynkEsp32_BLE
-    : public BlynkProtocol<BlynkTransportEsp32_BLE>
+  : public BlynkProtocol<BlynkTransportEsp32_BLE>
 {
     typedef BlynkProtocol<BlynkTransportEsp32_BLE> Base;
-public:
+  public:
     BlynkEsp32_BLE(BlynkTransportEsp32_BLE& transp)
-        : Base(transp)
+      : Base(transp)
 
     {}
 
     void begin(const char* auth)
     {
-        Base::begin(auth);
-        state = DISCONNECTED;
-        conn.begin();
+      Base::begin(auth);
+      state = DISCONNECTED;
+      conn.begin();
     }
 
     void setDeviceName(const char* name) {
-        conn.setDeviceName(name);
+      conn.setDeviceName(name);
     }
 
 };
