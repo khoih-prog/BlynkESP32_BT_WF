@@ -2,15 +2,25 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkESP32_BT_WF.svg?)](https://www.ardu-badge.com/BlynkESP32_BT_WF)
 
-By design, Blynk user can run ESP32 boards with either WiFi or BT/BLE by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot.
+### Releases v1.0.4
+
+1. Enhance Config Portal GUI.
+2. Reduce code size.
+
+By design, Blynk user can run ESP32 boards with ***either WiFi or BT/BLE*** by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, ***run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot.***
 
 Now from Version 1.0.2, you can eliminate `hardcoding` your Wifi and Blynk credentials, thanks to the `Smart Config Portal`, and have Credentials (WiFi SID/PW, Blynk WiFi/BT/BLE Tokens/ Hardware Port) saved in either SPIFFS or EEPROM.
 
+## Prerequisite
+1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
+2. [`Blynk library 0.6.1 or later`](https://github.com/blynkkk/blynk-library/releases)
+3. [`ESP32 core 1.0.4 or later`](https://github.com/espressif/arduino-esp32/releases) for ESP32 boards
 
 ### Installation
 
 #### Use Arduino Library Manager
 The suggested and easiest way is to use `Arduino Library Manager`. Search for `BlynkESP32_BT_WF`, then select / install the latest version.
+You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkESP32_BT_WF.svg?)](https://www.ardu-badge.com/BlynkESP32_BT_WF) for more detailed instructions.
 
 #### Manual Install
 
@@ -82,18 +92,20 @@ If the necessary credentials are not valid or it cannot connect to the Blynk ser
     <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/WiFi_AP.jpg">
 </p>
 
-After you connected, please, go to http://192.168.4.1.
+After you connected, please, go to http://192.168.4.1 or the configured AP IP. The Config Portal screen will appear:
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/Main.png">
+</p>
+
+Enter your WiFi and Blynk Credentials (Server, Port, WiFi/BT/BLE tokens) 
 
 <p align="center">
     <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/ConfigPortal.png">
 </p>
 
-Enter your credentials, then click `Save`. After you restarted, you will see your built-in LED turned OFF. That means, it connected to your Blynk server successfully.
+Then click `Save`. After you restarted, you will see your built-in LED turned OFF. That means, it connected to your Blynk server successfully.
 
-
-## Prerequisite
-* `ESP32 core 1.0.4 or later`
-* `Blynk library 0.6.1 or later` (https://www.arduino.cc/en/guide/libraries#toc3)
 
 ## Sample code
 ```
@@ -215,35 +227,36 @@ and this is the terminal debug output when running both WiFi and BT at the same 
 
 Starting Geiger-Counter-OLED-BT-BLE-WF
 Use WiFi to connect Blynk
-[332] RFC925 Hostname = GeigerCounter-WiFi
-[338] Calc Cksum = 0x3446, Read Cksum = 0x3446
-[338] Header = ESP32_WFM, SSID = ****, PW = ****
-[338] Server = ****.duckdns.org, Port = 8080, Token = ****
-[344] BT Token = ****, BLE Token = ****
-[352] Board Name = ESP32-BLE-WF
-[355] 
+[328] Hostname=GeigerCounter-WiFi
+[333] CCSum=0x3998,RCSum=0x3998
+[334] Hdr=ESP32_WFM,SSID=****,PW=****
+[334] Server=****.duckdns.org,Port=8080,Token=****
+[336] BT-Token=****,BLE-Token=****
+[344] BoardName=Geiger_Counter_OLED_BT
+[348] 
     ___  __          __
    / _ )/ /_ _____  / /__
   / _  / / // / _ \/  '_/
  /____/_/\_, /_//_/_/\_\
         /___/ v0.6.1 on ESP32
 
-[371] con2WF: start
-[1872] con2WF: con OK
-[1872] IP = 192.168.2.92, GW = 192.168.2.1, SN = 255.255.0.0
-[1872] DNS1 = 192.168.2.1, DNS2 = 0.0.0.0
-[1872] bg: WiFi connected. Try Blynk
-[1875] BlynkArduinoClient.connect: Connecting to ****.duckdns.org:8080
-[1956] Ready (ping: 42ms).
-[2026] bg: WiFi+Blynk connected
+[365] con2WF:start
+[1866] con2WF:conOK
+[1866] IP=192.168.2.92,GW=192.168.2.1,SN=255.255.0.0
+[1866] DNS1=192.168.2.1,DNS2=0.0.0.0
+[1866] b:WOK.TryB
+[1866] BlynkArduinoClient.connect: Connecting to ****.duckdns.org:8080
+[2016] Ready (ping: 9ms).
+[2086] b:WBOK
 Use BLE to connect Blynk
 BLE_auth = ****
-[2027] 
+[2086] 
     ___  __          __
    / _ )/ /_ _____  / /__
   / _  / / // / _ \/  '_/
  /____/_/\_, /_//_/_/\_\
         /___/ v0.6.1 on ESP32
+
 
 [14199] BLE connect
 [15191] Ready
@@ -288,6 +301,13 @@ cpm =  630 - RadiationValue = 4.145 uSv/h - Equivalent RadiationDose = 0.1900 uS
  11. Fix BT/BLE login timeout
  12. Add checksum for config data integrity
  13. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
+
+### Releases v1.0.4
+
+***Why this version***
+
+1. Enhance Config Portal GUI.
+2. Reduce code size.
 
 ### Releases v1.0.3
 

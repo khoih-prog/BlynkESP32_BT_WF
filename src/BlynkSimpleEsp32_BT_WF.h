@@ -2,11 +2,11 @@
    BlynkSimpleEsp32_BT_WF.h
    For ESP32 using BlueTooth along with WiFi
 
-   Library for inclusion of both ESP32 Blynk BT / BLE and WiFi libraries. Then select one at runtime.
+   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. Then select either one or both at runtime.
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.0.4
 
    Original Blynk Library author:
    @file       BlynkSimpleESP32.h
@@ -22,6 +22,7 @@
     1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
     1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
     1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
+    1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleEsp32_BT_WF_h
@@ -78,43 +79,43 @@ class BlynkTransportEsp32_BT
       instance = this;
 
       if (!btStarted() && !btStart()) {
-        BLYNK_LOG1(BLYNK_F("btStart failed"));
+        BLYNK_LOG1(BLYNK_F("BTStartFailed"));
         return;
       }
 
       esp_bluedroid_status_t bt_state = esp_bluedroid_get_status();
       if (bt_state == ESP_BLUEDROID_STATUS_UNINITIALIZED) {
         if (esp_bluedroid_init()) {
-          BLYNK_LOG1(BLYNK_F("esp_bluedroid_init failed"));
+          BLYNK_LOG1(BLYNK_F("BTInitFailed"));
           return;
         }
       }
 
       if (bt_state != ESP_BLUEDROID_STATUS_ENABLED) {
         if (esp_bluedroid_enable()) {
-          BLYNK_LOG1(BLYNK_F("esp_bluedroid_enable failed"));
+          BLYNK_LOG1(BLYNK_F("BTEnableFailed"));
           return;
         }
       }
 
       if (esp_spp_register_callback(esp_spp_cb) != ESP_OK) {
-        BLYNK_LOG1(BLYNK_F("esp_spp_register_callback failed"));
+        BLYNK_LOG1(BLYNK_F("RegCBFailed"));
         return;
       }
 
       if (esp_spp_init(ESP_SPP_MODE_CB) != ESP_OK) {
-        BLYNK_LOG1(BLYNK_F("esp_spp_init failed"));
+        BLYNK_LOG1(BLYNK_F("SPPInitFailed"));
         return;
       }
 
       if (esp_bredr_tx_power_set(ESP_PWR_LVL_N2, ESP_PWR_LVL_P7) != ESP_OK)
       {
-        BLYNK_LOG1(BLYNK_F("esp_bredr_tx_power_set failed"));
+        BLYNK_LOG1(BLYNK_F("TXPwrSetFailed"));
       };
 
       if (esp_bt_dev_set_device_name(mName) != ESP_OK)
       {
-        BLYNK_LOG1(BLYNK_F("esp_bt_dev_set_device_name failed"));
+        BLYNK_LOG1(BLYNK_F("BESetNameFailed"));
       }
     }
 
@@ -201,12 +202,12 @@ class BlynkTransportEsp32_BT
           }
           else
           {
-            BLYNK_LOG1(BLYNK_F("ESP_SPP_DATA_IND_EVT ERROR"));
+            BLYNK_LOG1(BLYNK_F("SPP_DATA_ERROR"));
           }
           break;
 
         case ESP_SPP_CONG_EVT: // SPP connection congestion status changed
-          BLYNK_LOG1(BLYNK_F("ESP_SPP_CONG_EVT"));
+          BLYNK_LOG1(BLYNK_F("SPP_CONG_EVT"));
           break;
 
         case ESP_SPP_SRV_OPEN_EVT://Server connection open
@@ -258,12 +259,12 @@ BlynkEsp32_BT Blynk_BT(_blynkTransport_BT);
 #define Blynk Blynk_BT
 
 void BlynkTransportEsp32_BT::onConnect() {
-  BLYNK_LOG1(BLYNK_F("BT connect"));
+  BLYNK_LOG1(BLYNK_F("BTCon"));
   Blynk_BT.startSession();
 };
 
 void BlynkTransportEsp32_BT::onDisconnect() {
-  BLYNK_LOG1(BLYNK_F("BT disconnect"));
+  BLYNK_LOG1(BLYNK_F("BTDisCon"));
   Blynk_BT.disconnect();
 }
 //
