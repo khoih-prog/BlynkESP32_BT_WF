@@ -6,12 +6,24 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/BlynkESP32_BT_WF.svg)](http://github.com/khoih-prog/BlynkESP32_BT_WF/issues)
 
+### Major Releases v1.0.5
+
+1. ***Multiple WiFi Credentials (SSID, Password)*** and system will autoconnect to the best and available WiFi SSID.
+2. ***Multiple Blynk Credentials (Server, Token)*** and system will autoconnect to the available Blynk Servers.
+3. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
+4. Dynamic custom parameters to be saved ***automatically in EEPROM, or SPIFFS***.
+5. WiFi Password max length increased to 63 from 31, according to WPA2 standard.
+6. Permit to input special chars such as ***%*** and ***#*** into data fields.
+7. Config Portal AP Channel is configurable (either static or random channel) to avoid channel conflict to other APs.
+
 ### Releases v1.0.4
 
 1. Enhance Config Portal GUI.
 2. Reduce code size.
 
 By design, Blynk user can run ESP32 boards with ***either WiFi or BT/BLE*** by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, ***run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot.***
+
+This library also supports (auto)connection to ***MultiWiFi and MultiBlynk, dynamic custom as well as static parameters in Config Portal***. Eliminate hardcoding your Wifi and Blynk credentials and configuration data saved in either SPIFFS or EEPROM.
 
 Now from Version 1.0.2, you can eliminate `hardcoding` your Wifi and Blynk credentials, thanks to the `Smart Config Portal`, and have Credentials (WiFi SID/PW, Blynk WiFi/BT/BLE Tokens/ Hardware Port) saved in either SPIFFS or EEPROM.
 
@@ -57,6 +69,78 @@ In your code, replace
 6. `Blynk.run();`             with `Blynk_BT.run()` for BlueTooth related function calls
 or 
 7. `Blynk.run();`             with `Blynk_BLE.run()` for BLE related function calls
+
+### How to add dynamic parameters from sketch
+
+- To add custom parameters, just modify from the example below
+
+```cpp
+#define USE_DYNAMIC_PARAMETERS     true
+
+/////////////// Start dynamic Credentials ///////////////
+
+//Defined in <BlynkSimpleEsp32_WFM.h>
+/**************************************
+  #define MAX_ID_LEN                5
+  #define MAX_DISPLAY_NAME_LEN      16
+
+  typedef struct
+  {
+  char id             [MAX_ID_LEN + 1];
+  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+  char *pdata;
+  uint8_t maxlen;
+  } MenuItem;
+**************************************/
+
+#if USE_DYNAMIC_PARAMETERS
+
+#define MAX_MQTT_SERVER_LEN      34
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
+
+#define MAX_MQTT_PORT_LEN        6
+char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "";
+
+#define MAX_MQTT_USERNAME_LEN      34
+char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "";
+
+#define MAX_MQTT_PW_LEN        34
+char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "";
+
+#define MAX_MQTT_SUBS_TOPIC_LEN      34
+char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "";
+
+#define MAX_MQTT_PUB_TOPIC_LEN       34
+char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "";
+
+MenuItem myMenuItems [] =
+{
+  { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
+  { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
+  { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
+  { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
+  { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
+  { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
+};
+
+uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+
+#else
+
+MenuItem myMenuItems [] = {};
+
+uint16_t NUM_MENU_ITEMS = 0;
+#endif
+
+
+/////// // End dynamic Credentials ///////////
+
+```
+- If you don't need to add dynamic parameters, just use the following in sketch
+
+```cpp
+#define USE_DYNAMIC_PARAMETERS     false
+```
 
 
 That's it.
@@ -111,21 +195,30 @@ Enter your WiFi and Blynk Credentials (Server, Port, WiFi/BT/BLE tokens)
 Then click `Save`. After you restarted, you will see your built-in LED turned OFF. That means, it connected to your Blynk server successfully.
 
 
-## Sample code
-```
+## Example [ESP32_BLE_WF](examples/ESP32_BLE_WF)
+
+Please take a look at examples, as well.
+
+```cpp
+#ifndef ESP32
+#error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
+#endif
+
 #define BLYNK_PRINT Serial
+
+#define ESP32_BLE_WF_DEBUG       true
 
 #define USE_BLYNK_WM      true
 //#define USE_BLYNK_WM      false
 
-#define USE_SPIFFS        true
-//#define USE_SPIFFS      false
+//#define USE_SPIFFS                  true
+#define USE_SPIFFS                  false
 
 #if (!USE_SPIFFS)
-  // EEPROM_SIZE must be <= 2048 and >= CONFIG_DATA_SIZE
-  #define EEPROM_SIZE    (2 * 1024)
-  // EEPROM_START + CONFIG_DATA_SIZE must be <= EEPROM_SIZE
-  #define EEPROM_START   768
+// EEPROM_SIZE must be <= 2048 and >= CONFIG_DATA_SIZE
+#define EEPROM_SIZE    (2 * 1024)
+// EEPROM_START + CONFIG_DATA_SIZE must be <= EEPROM_SIZE
+#define EEPROM_START   0
 #endif
 
 // Force some params in Blynk, only valid for library version 1.0.1 and later
@@ -142,74 +235,241 @@ Then click `Save`. After you restarted, you will see your built-in LED turned OF
 #include <BLEServer.h>
 
 #if !BLYNK_USE_BLE_ONLY
-  #if USE_BLYNK_WM
-    #warning Please select 1.3MB+ for APP (Minimal SPIFFS (1.9MB APP, OTA), HugeAPP(3MB APP, NoOTA) or NoOA(2MB APP) 
-    #include <BlynkSimpleEsp32_WFM.h>
-  #else
-    #include <BlynkSimpleEsp32_WF.h>
+#if USE_BLYNK_WM
+#warning Please select 1.3MB+ for APP (Minimal SPIFFS (1.9MB APP, OTA), HugeAPP(3MB APP, NoOTA) or NoOA(2MB APP)
+#include <BlynkSimpleEsp32_WFM.h>
 
-    String cloudBlynkServer = "account.duckdns.org";
-    //String cloudBlynkServer = "192.168.2.110";
-    #define BLYNK_SERVER_HARDWARE_PORT    8080
-    char ssid[] = "SSID";
-    char pass[] = "PASS";
-  #endif
+#define USE_DYNAMIC_PARAMETERS      true
+
+/////////////// Start dynamic Credentials ///////////////
+
+//Defined in <BlynkSimpleEsp32_WFM.h>
+/**************************************
+  #define MAX_ID_LEN                5
+  #define MAX_DISPLAY_NAME_LEN      16
+
+  typedef struct
+  {
+  char id             [MAX_ID_LEN + 1];
+  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+  char *pdata;
+  uint8_t maxlen;
+  } MenuItem;
+**************************************/
+
+#if USE_DYNAMIC_PARAMETERS
+
+#define MAX_MQTT_SERVER_LEN      34
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
+
+#define MAX_MQTT_PORT_LEN        6
+char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "";
+
+#define MAX_MQTT_USERNAME_LEN      34
+char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "";
+
+#define MAX_MQTT_PW_LEN        34
+char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "";
+
+#define MAX_MQTT_SUBS_TOPIC_LEN      34
+char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "";
+
+#define MAX_MQTT_PUB_TOPIC_LEN       34
+char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "";
+
+MenuItem myMenuItems [] =
+{
+  { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
+  { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
+  { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
+  { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
+  { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
+  { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
+};
+
+#else
+
+MenuItem myMenuItems [] = {};
+
+#endif
+
+uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+/////// // End dynamic Credentials ///////////
+
+#else
+#include <BlynkSimpleEsp32_WF.h>
+
+String cloudBlynkServer = "account.duckdns.org";
+//String cloudBlynkServer = "192.168.2.110";
+#define BLYNK_SERVER_HARDWARE_PORT    8080
+char ssid[] = "SSID";
+char pass[] = "PASS";
+#endif
 #endif
 
 #if (BLYNK_USE_BLE_ONLY || !USE_BLYNK_WM)
-  // Blynk token shared between BLE and WiFi
-  char auth[] = "****";
+// Blynk token shared between BLE and WiFi
+char auth[] = "****";
 #endif
 
 bool USE_BLE = true;
+long timePreviousMeassure  = 0;
+
+#define WIFI_BLE_SELECTION_PIN     14   //Pin D14 mapped to pin GPIO14/HSPI_SCK/ADC16/TOUCH6/TMS of ESP32
+
+BlynkTimer timer;
+
+#include <Ticker.h>
+Ticker     led_ticker;
+
+void set_led(byte status)
+{
+  digitalWrite(LED_BUILTIN, status);
+}
+
+void noticeAlive(void)
+{ 
+  if (USE_BLE)
+    Blynk_BLE.virtualWrite(V0, F("OK"));
+  else
+    Blynk_WF.virtualWrite(V0, F("OK"));
+}
+
+void heartBeatPrint(void)
+{
+  static int num = 1;
+
+  if (Blynk.connected())
+  {
+    set_led(HIGH);
+    led_ticker.once_ms(111, set_led, (byte) LOW);
+    Serial.print("B");
+  }
+  else
+  {
+    Serial.print("F");
+  }
+
+  if (num == 80)
+  {
+    Serial.println();
+    num = 1;
+  }
+  else if (num++ % 10 == 0)
+  {
+    Serial.print(" ");
+  }
+}
+
+void checkStatus()
+{
+  static unsigned long checkstatus_timeout = 0;
+
+#define STATUS_CHECK_INTERVAL     60000L
+
+  // Send status report every STATUS_REPORT_INTERVAL (60) seconds: we don't need to send updates frequently if there is no status change.
+  if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
+  {
+    if (!USE_BLE)
+    {
+      // report Blynk connection
+      heartBeatPrint();
+    }
+
+    checkstatus_timeout = millis() + STATUS_CHECK_INTERVAL;
+  }
+}
+
+char BLE_Device_Name[] = "GeigerCounter-BLE";
 
 void setup()
 {
   Serial.begin(115200);
   Serial.println(F("\nStarting ESP32_BLE_WF"));
 
-  pinMode(WIFI_BLE_SELECTION_PIN, INPUT);
- 
+  pinMode(WIFI_BLE_SELECTION_PIN, INPUT_PULLUP);
+
 #if BLYNK_USE_BLE_ONLY
   Blynk_BLE.setDeviceName(BLE_Device_Name);
+
+  #if ESP32_BLE_WF_DEBUG
+  Serial.println(F("Blynk_BLE begin"));
+#endif
+
   Blynk_BLE.begin(auth);
 #else
   if (digitalRead(WIFI_BLE_SELECTION_PIN) == HIGH)
   {
     USE_BLE = false;
     Serial.println(F("GPIO14 HIGH, Use WiFi"));
-    #if USE_BLYNK_WM
-      Blynk_WF.begin(BLE_Device_Name);
-    #else
-      Blynk_WF.begin(auth, ssid, pass, cloudBlynkServer.c_str(), BLYNK_SERVER_HARDWARE_PORT);
-    #endif
+#if USE_BLYNK_WM
+#if ESP32_BLE_WF_DEBUG
+    Serial.println(F("USE_BLYNK_WM: Blynk_WF begin"));
+#endif
+    // Set config portal channel, defalut = 1. Use 0 => random channel from 1-13 to avoid conflict
+    Blynk_WF.setConfigPortalChannel(0);
+    
+    Blynk_WF.begin(BLE_Device_Name);
+#else
+    //Blynk_WF.begin(auth, ssid, pass);
+#if ESP32_BLE_WF_DEBUG    
+    Serial.println(F("Not USE_BLYNK_WM: Blynk_WF begin"));
+#endif    
+    Blynk_WF.begin(auth, ssid, pass, cloudBlynkServer.c_str(), BLYNK_SERVER_HARDWARE_PORT);
+#endif
   }
   else
   {
     USE_BLE = true;
     Serial.println(F("GPIO14 LOW, Use BLE"));
     Blynk_BLE.setDeviceName(BLE_Device_Name);
-    #if USE_BLYNK_WM
-      if (Blynk_WF.getBlynkBLEToken() == String("nothing"))
-      {
-        Serial.println(F("No valid stored BLE auth. Have to run WiFi then enter config portal"));
-        USE_BLE = false;
-        Blynk_WF.begin(BLE_Device_Name);
-      }
-      String BLE_auth = Blynk_WF.getBlynkBLEToken();
-    #else
-      String BLE_auth = auth;
-    #endif
+#if USE_BLYNK_WM
+    if (Blynk_WF.getBlynkBLEToken() == NO_CONFIG)        //String("blank"))
+    {
+      Serial.println(F("No valid stored BLE auth. Have to run WiFi then enter config portal"));
+      USE_BLE = false;
+
+#if ESP32_BLE_WF_DEBUG
+      Serial.println(F("USE_BLYNK_WM: No BLE Token. Blynk_WF begin"));
+#endif  
+      
+      Blynk_WF.begin(BLE_Device_Name);
+    }
+    String BLE_auth = Blynk_WF.getBlynkBLEToken();
+#else
+    String BLE_auth = auth;
+#endif
 
     if (USE_BLE)
     {
       Serial.print(F("Connecting Blynk via BLE, using auth = "));
       Serial.println(BLE_auth);
+
+#if ESP32_BLE_WF_DEBUG      
+      Serial.println(F("USE_BLE: Blynk_BLE begin"));
+#endif   
+      
       Blynk_BLE.begin(BLE_auth.c_str());
     }
   }
 #endif
+
+  // Important, need to keep constant communication to Blynk Server at least once per ~25s
+  // Or Blynk will lost and have to (auto)reconnect
+  timer.setInterval(10000L, noticeAlive);
 }
+
+#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
+void displayCredentials(void)
+{
+  Serial.println("\nYour stored Credentials :");
+
+  for (int i = 0; i < NUM_MENU_ITEMS; i++)
+  {
+    Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
+  }
+}
+#endif
 
 void loop()
 {
@@ -221,40 +481,112 @@ void loop()
   else
     Blynk_WF.run();
 #endif
+
+  timer.run(); 
+  checkStatus();
+
+#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
+  static bool displayedCredentials = false;
+
+  if (!displayedCredentials)
+  {
+    for (int i = 0; i < NUM_MENU_ITEMS; i++)
+    {
+      if (!strlen(myMenuItems[i].pdata))
+      {
+        break;
+      }
+
+      if ( i == (NUM_MENU_ITEMS - 1) )
+      {
+        displayedCredentials = true;
+        displayCredentials();
+      }
+    }
+  }
+#endif    
 }
 ```
 
-and this is the terminal debug output when running both WiFi and BT at the same time using example  [Geiger_Counter_OLED_BT_BLE_WF](examples/Geiger_Counter_OLED_BT_BLE_WF)
+The following is the sample terminal output when running example [Geiger_Counter_OLED_BT_BLE_WF](examples/Geiger_Counter_OLED_BT_BLE_WF)
+
+1. No Config Data => Config Portal
 
 ```
 
-
 Starting Geiger-Counter-OLED-BT-BLE-WF
 Use WiFi to connect Blynk
-[328] Hostname=GeigerCounter-WiFi
-[333] CCSum=0x3998,RCSum=0x3998
-[334] Hdr=ESP32_WFM,SSID=****,PW=****
-[334] Server=****.duckdns.org,Port=8080,Token=****
-[336] BT-Token=****,BLE-Token=****
-[344] BoardName=Geiger_Counter_OLED_BT
-[348] 
+[346] Hostname=GeigerCounter-WiFi
+[352] CCSum=0xbedc,RCSum=0xffffffff
+[352] CrCCSum=0xaf50,CrRCSum=0xffffffff
+[352] InitEEPROM,sz=2048,Datasz=628
+[352] pdata=blank,len=34
+[353] pdata=blank,len=6
+[355] pdata=blank,len=34
+[357] pdata=blank,len=34
+[360] pdata=blank,len=34
+[362] pdata=blank,len=34
+[364] CrCCSum=0xc30
+[439] b:Nodat.Stay
+[1285] stConf:SSID=ESP_1CA4AE30,PW=MyESP_1CA4AE30
+[1285] IP=192.168.4.1,ch=7
+Use BLE to connect Blynk
+[1392] CCSum=0x199d,RCSum=0x0
+[1392] CrCCSum=0xc30,CrRCSum=0xc30
+[1392] InitEEPROM,sz=2048,Datasz=628
+[1392] pdata=blank,len=34
+[1392] pdata=blank,len=6
+[1395] pdata=blank,len=34
+[1397] pdata=blank,len=34
+[1399] pdata=blank,len=34
+[1402] pdata=blank,len=34
+[1404] CrCCSum=0xc30
+BLE_auth = blank
+No valid stored BLE auth. Have to run WiFi then enter config portal
+Your stored Credentials :
+MQTT Server = blank
+Port = blank
+MQTT UserName = blank
+MQTT PWD = blank
+Subs Topics = blank
+Pubs Topics = blank
+FFFFF
+```
+
+2. Input valid credentials => reboot
+
+```
+Starting Geiger-Counter-OLED-BT-BLE-WF
+Use WiFi to connect Blynk
+[347] Hostname=GeigerCounter-WiFi
+[353] CCSum=0x4c8e,RCSum=0x4c8e
+[353] CrCCSum=0x1ef9,CrRCSum=0x1ef9
+[353] Hdr=ESP32_WFM,BrdName=ESP32_BLE_BT_WM-TTGO
+[353] SSID=HueNet1,PW=****
+[355] SSID1=HueNet,PW1=****
+[358] Server=account.ddns.net,Token=****
+[364] Server1=account.duckdns.org,Token1=****
+[370] BT-Token=****,BLE-Token=****
+[378] Port=8080
+[380] Connecting MultiWifi...
+[4994] WiFi connected after time: 1
+[4994] SSID:HueNet,RSSI=-38
+[4994] Channel:10,IP=192.168.2.69
+[4994] b:WOK.TryB
+[4994] 
     ___  __          __
    / _ )/ /_ _____  / /__
   / _  / / // / _ \/  '_/
  /____/_/\_, /_//_/_/\_\
         /___/ v0.6.1 on ESP32
 
-[365] con2WF:start
-[1866] con2WF:conOK
-[1866] IP=192.168.2.92,GW=192.168.2.1,SN=255.255.0.0
-[1866] DNS1=192.168.2.1,DNS2=0.0.0.0
-[1866] b:WOK.TryB
-[1866] BlynkArduinoClient.connect: Connecting to ****.duckdns.org:8080
-[2016] Ready (ping: 9ms).
-[2086] b:WBOK
+[5006] BlynkArduinoClient.connect: Connecting to account.ddns.net:8080
+[5040] Ready (ping: 12ms).
+[5111] Conn2BlynkServer=account.ddns.net,Token=****
+[5111] b:WBOK
 Use BLE to connect Blynk
 BLE_auth = ****
-[2086] 
+[5114] 
     ___  __          __
    / _ )/ /_ _____  / /__
   / _  / / // / _ \/  '_/
@@ -262,9 +594,16 @@ BLE_auth = ****
         /___/ v0.6.1 on ESP32
 
 
-[14199] BLE connect
-[15191] Ready
+Your stored Credentials :
+MQTT Server = mqtt.ddns.net
+Port = 1883
+MQTT UserName = mqtt-user
+MQTT PWD = mqtt-password
+Subs Topics = SubTopic_ESP32_BLE_BT_WM
+Pubs Topics = PubTopic_ESP32_BLE_BT_WM
 cpm =    0 - RadiationValue = 0.000 uSv/h - Equivalent RadiationDose = 0.0000 uSv
+B[27863] BLECon
+[29155] Ready
 cpm =   30 - RadiationValue = 0.197 uSv/h - Equivalent RadiationDose = 0.0008 uSv
 cpm =   60 - RadiationValue = 0.395 uSv/h - Equivalent RadiationDose = 0.0025 uSv
 cpm =   90 - RadiationValue = 0.592 uSv/h - Equivalent RadiationDose = 0.0049 uSv
@@ -274,7 +613,7 @@ cpm =  180 - RadiationValue = 1.184 uSv/h - Equivalent RadiationDose = 0.0173 uS
 cpm =  210 - RadiationValue = 1.382 uSv/h - Equivalent RadiationDose = 0.0230 uSv
 cpm =  240 - RadiationValue = 1.579 uSv/h - Equivalent RadiationDose = 0.0296 uSv
 cpm =  270 - RadiationValue = 1.777 uSv/h - Equivalent RadiationDose = 0.0370 uSv
-cpm =  300 - RadiationValue = 1.974 uSv/h - Equivalent RadiationDose = 0.0452 uSv
+ cpm =  300 - RadiationValue = 1.974 uSv/h - Equivalent RadiationDose = 0.0452 uSv
 cpm =  330 - RadiationValue = 2.171 uSv/h - Equivalent RadiationDose = 0.0543 uSv
 cpm =  360 - RadiationValue = 2.369 uSv/h - Equivalent RadiationDose = 0.0642 uSv
 cpm =  390 - RadiationValue = 2.566 uSv/h - Equivalent RadiationDose = 0.0748 uSv
@@ -285,8 +624,6 @@ cpm =  510 - RadiationValue = 3.356 uSv/h - Equivalent RadiationDose = 0.1258 uS
 cpm =  540 - RadiationValue = 3.553 uSv/h - Equivalent RadiationDose = 0.1406 uSv
 cpm =  570 - RadiationValue = 3.751 uSv/h - Equivalent RadiationDose = 0.1563 uSv
 cpm =  600 - RadiationValue = 3.948 uSv/h - Equivalent RadiationDose = 0.1727 uSv
-cpm =  630 - RadiationValue = 4.145 uSv/h - Equivalent RadiationDose = 0.1900 uSv
-
 
 ```
 
@@ -305,6 +642,24 @@ cpm =  630 - RadiationValue = 4.145 uSv/h - Equivalent RadiationDose = 0.1900 uS
  11. Fix BT/BLE login timeout
  12. Add checksum for config data integrity
  13. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
+ 14. Add MultiWiFi feature to enable reconnect to the best / available WiFi AP.
+ 15. Add MultiBlynk feature to enable reconnect to the best / available Blynk Server.
+ 16. WiFi Password max length is 63, as in WPA2 standards
+ 17. Permit to input special chars such as ***%*** and ***#*** into data fields.
+ 18. Add Dynamic Custom Parameters with checksum
+ 19. Add function to configure AP Channel to avoid channel conflict.
+
+### Major Releases v1.0.5
+
+***Why this version***
+
+1. ***Multiple WiFi Credentials (SSID, Password)*** and system will autoconnect to the best and available WiFi SSID.
+2. ***Multiple Blynk Credentials (Server, Token)*** and system will autoconnect to the available Blynk Servers.
+3. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
+4. Dynamic custom parameters to be saved ***automatically in EEPROM, or SPIFFS***.
+5. WiFi Password max length increased to 63 from 31, according to WPA2 standard.
+6. Permit to input special chars such as ***%*** and ***#*** into data fields.
+7. Config Portal AP Channel is configurable (either static or random channel) to avoid channel conflict to other APs.
 
 ### Releases v1.0.4
 

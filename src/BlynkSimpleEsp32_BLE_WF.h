@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.4
+   Version: 1.0.5
 
    Original Blynk Library author:
    @file       BlynkSimpleESP32.h
@@ -23,6 +23,8 @@
     1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
     1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
     1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
+    1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
+                                    Permit special chars # and % in input data.
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleEsp32_BLE_WF_h

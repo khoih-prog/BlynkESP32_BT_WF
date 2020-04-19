@@ -1,7 +1,7 @@
 {
   "name": "BlynkESP32_BT_WF",
-  "version": "1.0.4",
-  "description": "Build a smartphone app for your project in minutes. Blynk allows creating IoT solutions easily. It supports  WiFi, BLE, Bluetooth, Ethernet, GSM, USB, Serial. Works with many boards like ESP8266, ESP32, Arduino UNO, Nano, Due, Mega, Zero, MKR100, Yun, Raspberry Pi, Particle, Energia, ARM mbed, Intel Edison/Galileo/Joule, BBC micro:bit, DFRobot, RedBearLab, Microduino, LinkIt ONE ...",
+  "version": "1.0.5",
+  "description": "By design, Blynk user can run ESP32 boards with either WiFi or BT/BLE by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot. This library also supports (auto)connection to MultiWiFi and MultiBlynk, dynamic custom as well as static parameters in Config Portal. Eliminate hardcoding your Wifi and Blynk credentials and configuration data saved in either SPIFFS or EEPROM.",
   "keywords": "sensors, control, device, smartphone, mobile, app, web, cloud, communication, protocol, iot, m2m, wifi, ble, bluetooth, ethernet, usb, serial, gsm, gprs, 3g, data, esp8266, http",
   "authors":
   {
@@ -14,7 +14,7 @@
     "type": "git",
     "url": "//https://github.com/khoih-prog/BlynkESP32_BT_WF"
   },
-  "homepage": "http://blynk.cc",
+  "homepage": "https://github.com/khoih-prog/BlynkESP32_BT_WF",
   "export": {
     "exclude": [
       "linux",

@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.4
+   Version: 1.0.5
 
    Based on orignal code by Crosswalkersam (https://community.blynk.cc/u/Crosswalkersam)
    posted in https://community.blynk.cc/t/select-connection-type-via-switch/43176
@@ -20,7 +20,20 @@
     1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
     1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
     1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
+    1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
+                                    Permit special chars # and % in input data.
  *****************************************************************************************************************************/
+/****************************************************************************************************************************
+   Important Notes:
+   1) Sketch is ~0.9MB of code because only 1 instance of Blynk if #define BLYNK_USE_BT_ONLY  =>  true
+   2) Sketch is very large (~1.3MB code) because 2 instances of Blynk if #define BLYNK_USE_BT_ONLY  =>    false
+   3) To conmpile, use Partition Scheem with large APP size, such as
+      a) 8MB Flash (3MB APP, 1.5MB FAT) if use EEPROM
+      b) No OTA (2MB APP, 2MB SPIFFS)
+      c) No OTA (2MB APP, 2MB FATFS)  if use EEPROM
+      d) Huge APP (3MB No OTA, 1MB SPIFFS)   <===== Preferable if use SPIFFS
+      e) Minimal SPIFFS (1.9MB APP with OTA, 190KB SPIFFS)
+  *****************************************************************************************************************************/
 
 #ifndef ESP32
 #error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
@@ -36,14 +49,14 @@
 #define USE_BLYNK_WM      true
 //#define USE_BLYNK_WM      false
 
-#define USE_SPIFFS                  true
-//#define USE_SPIFFS                  false
+//#define USE_SPIFFS                  true
+#define USE_SPIFFS                  false
 
 #if (!USE_SPIFFS)
 // EEPROM_SIZE must be <= 2048 and >= CONFIG_DATA_SIZE
 #define EEPROM_SIZE    (2 * 1024)
 // EEPROM_START + CONFIG_DATA_SIZE must be <= EEPROM_SIZE
-#define EEPROM_START   256
+#define EEPROM_START   0
 #endif
 
 // Force some params in Blynk, only valid for library version 1.0.1 and later
@@ -57,6 +70,64 @@
 #if USE_BLYNK_WM
 #warning Please select 1.3MB+ for APP (Minimal SPIFFS (1.9MB APP, OTA), HugeAPP(3MB APP, NoOTA) or NoOA(2MB APP)
 #include <BlynkSimpleEsp32_WFM.h>
+
+#define USE_DYNAMIC_PARAMETERS      true
+
+/////////////// Start dynamic Credentials ///////////////
+
+//Defined in <BlynkSimpleEsp32_WFM.h>
+/**************************************
+  #define MAX_ID_LEN                5
+  #define MAX_DISPLAY_NAME_LEN      16
+
+  typedef struct
+  {
+  char id             [MAX_ID_LEN + 1];
+  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+  char *pdata;
+  uint8_t maxlen;
+  } MenuItem;
+**************************************/
+
+#if USE_DYNAMIC_PARAMETERS
+
+#define MAX_MQTT_SERVER_LEN      34
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
+
+#define MAX_MQTT_PORT_LEN        6
+char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "";
+
+#define MAX_MQTT_USERNAME_LEN      34
+char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "";
+
+#define MAX_MQTT_PW_LEN        34
+char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "";
+
+#define MAX_MQTT_SUBS_TOPIC_LEN      34
+char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "";
+
+#define MAX_MQTT_PUB_TOPIC_LEN       34
+char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "";
+
+MenuItem myMenuItems [] =
+{
+  { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
+  { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
+  { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
+  { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
+  { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
+  { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
+};
+
+#else
+
+MenuItem myMenuItems [] = {};
+
+#endif
+
+uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+/////// // End dynamic Credentials ///////////
+
 #else
 #include <BlynkSimpleEsp32_WF.h>
 
@@ -109,6 +180,9 @@ volatile long          count = 0;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET_PIN);
 BlynkTimer timer;
+
+#include <Ticker.h>
+Ticker     led_ticker;
 
 void IRAM_ATTR countPulse()
 {
@@ -184,6 +258,37 @@ void OLED_Display()
   display.display();
 }
 
+void set_led(byte status)
+{
+  digitalWrite(LED_BUILTIN, status);
+}
+
+void heartBeatPrint(void)
+{
+  static int num = 1;
+
+  if (Blynk.connected())
+  {
+    set_led(HIGH);
+    led_ticker.once_ms(111, set_led, (byte) LOW);
+    Serial.print("B");
+  }
+  else
+  {
+    Serial.print("F");
+  }
+
+  if (num == 80)
+  {
+    Serial.println();
+    num = 1;
+  }
+  else if (num++ % 10 == 0)
+  {
+    Serial.print(" ");
+  }
+}
+
 #define USE_SIMULATION    true
 
 void checkStatus()
@@ -219,6 +324,9 @@ void checkStatus()
 #else
     count = 0;
 #endif
+
+      // report Blynk connection
+      heartBeatPrint();
   }
 }
 
@@ -245,6 +353,9 @@ void setup()
   Serial.println(F("Use WiFi to connect Blynk"));
 
 #if USE_BLYNK_WM
+  // Set config portal channel, defalut = 1. Use 0 => random channel from 1-13 to avoid conflict
+  Blynk_WF.setConfigPortalChannel(0);
+    
   Blynk_WF.begin(BT_Device_Name);
 #else
   //Blynk_WF.begin(WiFi_auth, ssid, pass);
@@ -259,7 +370,7 @@ void setup()
   Serial.print(F("BT_auth = "));
   Serial.println(BT_auth);
 
-  if (BT_auth == String("nothing"))
+  if (BT_auth == NO_CONFIG)        //String("blank"))
   {
     Serial.println(F("No valid stored BT auth. Have to run WiFi then enter config portal"));
     valid_BT_token = false;
@@ -277,6 +388,18 @@ void setup()
   timer.setInterval(5000L, sendDatatoBlynk);
 }
 
+#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
+void displayCredentials(void)
+{
+  Serial.println("\nYour stored Credentials :");
+
+  for (int i = 0; i < NUM_MENU_ITEMS; i++)
+  {
+    Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
+  }
+}
+#endif
+
 void loop()
 {
   if (valid_BT_token)
@@ -285,4 +408,25 @@ void loop()
   Blynk_WF.run();
   timer.run();
   checkStatus();
+
+#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
+  static bool displayedCredentials = false;
+
+  if (!displayedCredentials)
+  {
+    for (int i = 0; i < NUM_MENU_ITEMS; i++)
+    {
+      if (!strlen(myMenuItems[i].pdata))
+      {
+        break;
+      }
+
+      if ( i == (NUM_MENU_ITEMS - 1) )
+      {
+        displayedCredentials = true;
+        displayCredentials();
+      }
+    }
+  }
+#endif      
 }
