@@ -186,7 +186,7 @@ bool LOAD_DEFAULT_CONFIG_DATA = false;
   /////////// End Default Config Data /////////////
 ```
 
-### 4. How to add dynamic parameters from sketch
+#### 4. How to add dynamic parameters from sketch
 
 - To add custom parameters, just modify the example below
 
