@@ -2,16 +2,14 @@
    Geiger_Counter_OLED_BT_WF.ino
    For ESP32 using WiFi and BlueTooth simultaneously
 
-   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. Then select either one or both at runtime.
-   Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
+   Then select either one or both at runtime.
+   
+   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.5
-
-   Based on orignal code by Crosswalkersam (https://community.blynk.cc/u/Crosswalkersam)
-   posted in https://community.blynk.cc/t/select-connection-type-via-switch/43176
-   Purpose: Use WiFi when posible by GPIO14 => HIGH or floating when reset.
-            Use Bluetooth when WiFi not available (such as in the field) by by GPIO14 => LOW when reset.
+   
+   Version: 1.0.6
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -22,6 +20,8 @@
     1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
     1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
                                     Permit special chars # and % in input data.
+    1.0.6   K Hoang      24/04/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATAa and DRD.
+                                    Auto format SPIFFS. Update examples.
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    Important Notes:
@@ -35,119 +35,14 @@
       e) Minimal SPIFFS (1.9MB APP with OTA, 190KB SPIFFS)
   *****************************************************************************************************************************/
 
-#ifndef ESP32
-#error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
-#endif
-
-#define BLYNK_PRINT Serial
+#include "defines.h"
+#include "Credentials.h"
+#include "dynamicParams.h"
 
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-
-#define USE_BLYNK_WM      true
-//#define USE_BLYNK_WM      false
-
-//#define USE_SPIFFS                  true
-#define USE_SPIFFS                  false
-
-#if (!USE_SPIFFS)
-// EEPROM_SIZE must be <= 2048 and >= CONFIG_DATA_SIZE
-#define EEPROM_SIZE    (2 * 1024)
-// EEPROM_START + CONFIG_DATA_SIZE must be <= EEPROM_SIZE
-#define EEPROM_START   0
-#endif
-
-// Force some params in Blynk, only valid for library version 1.0.1 and later
-#define TIMEOUT_RECONNECT_WIFI                    10000L
-#define RESET_IF_CONFIG_TIMEOUT                   true
-#define CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET    5
-// Those above #define's must be placed before #include <BlynkSimpleEsp32_WFM.h>
-
-#include <BlynkSimpleEsp32_BT_WF.h>
-
-#if USE_BLYNK_WM
-#warning Please select 1.3MB+ for APP (Minimal SPIFFS (1.9MB APP, OTA), HugeAPP(3MB APP, NoOTA) or NoOA(2MB APP)
-#include <BlynkSimpleEsp32_WFM.h>
-
-#define USE_DYNAMIC_PARAMETERS      true
-
-/////////////// Start dynamic Credentials ///////////////
-
-//Defined in <BlynkSimpleEsp32_WFM.h>
-/**************************************
-  #define MAX_ID_LEN                5
-  #define MAX_DISPLAY_NAME_LEN      16
-
-  typedef struct
-  {
-  char id             [MAX_ID_LEN + 1];
-  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
-  char *pdata;
-  uint8_t maxlen;
-  } MenuItem;
-**************************************/
-
-#if USE_DYNAMIC_PARAMETERS
-
-#define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
-
-#define MAX_MQTT_PORT_LEN        6
-char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "";
-
-#define MAX_MQTT_USERNAME_LEN      34
-char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "";
-
-#define MAX_MQTT_PW_LEN        34
-char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "";
-
-#define MAX_MQTT_SUBS_TOPIC_LEN      34
-char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "";
-
-#define MAX_MQTT_PUB_TOPIC_LEN       34
-char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "";
-
-MenuItem myMenuItems [] =
-{
-  { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
-  { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
-  { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
-  { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
-  { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
-  { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
-};
-
-#else
-
-MenuItem myMenuItems [] = {};
-
-#endif
-
-uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
-/////// // End dynamic Credentials ///////////
-
-#else
-#include <BlynkSimpleEsp32_WF.h>
-
-//String cloudBlynkServer = "account.duckdns.org";
-//String cloudBlynkServer = "192.168.2.110";
-#define BLYNK_SERVER_HARDWARE_PORT    8080
-
-char ssid[] = "SSID";
-char pass[] = "PASS";
-
-// WiFi Blynk token
-char WiFi_auth[]  = "WF_token";
-
-// BT Blynk token, not shared between BT and WiFi
-char BT_auth[]    = "BT_token";
-
-// BLE Blynk token, not shared between BT and WiFi
-char BLE_auth[]    = "BLE_token";
-#endif
-
 
 #define WIFI_BT_SELECTION_PIN     14   //Pin D14 mapped to pin GPIO14/HSPI_SCK/ADC16/TOUCH6/TMS of ESP32
 #define GEIGER_INPUT_PIN          18   // Pin D18 mapped to pin GPIO18/VSPI_SCK of ESP32
@@ -271,11 +166,11 @@ void heartBeatPrint(void)
   {
     set_led(HIGH);
     led_ticker.once_ms(111, set_led, (byte) LOW);
-    Serial.print("B");
+    Serial.print(F("B"));    
   }
   else
   {
-    Serial.print("F");
+    Serial.print(F("F"));
   }
 
   if (num == 80)
@@ -285,7 +180,7 @@ void heartBeatPrint(void)
   }
   else if (num++ % 10 == 0)
   {
-    Serial.print(" ");
+    Serial.print(F(" "));
   }
 }
 
@@ -337,7 +232,19 @@ char BT_Device_Name[] = "GeigerCounter-BT";
 void setup()
 {
   Serial.begin(115200);
-  Serial.println(F("\nStarting Geiger-Counter-OLED-BT-WF"));
+  while (!Serial);
+
+#if ( USE_SPIFFS)
+  Serial.print(F("\nStarting Geiger-Counter-OLED-BT-WF using SPIFFS"));
+#else
+  Serial.print(F("\nStarting Geiger-Counter-OLED-BT-WF using EEPROM"));
+#endif
+
+#if USE_SSL
+  Serial.println(" with SSL on " + String(ARDUINO_BOARD));
+#else
+  Serial.println(" without SSL on " + String(ARDUINO_BOARD));
+#endif
 
   pinMode(GEIGER_INPUT_PIN, INPUT);
   attachInterrupt(GEIGER_INPUT_PIN, countPulse, HIGH);
@@ -353,8 +260,26 @@ void setup()
   Serial.println(F("Use WiFi to connect Blynk"));
 
 #if USE_BLYNK_WM
-  // Set config portal channel, defalut = 1. Use 0 => random channel from 1-13 to avoid conflict
+  // Set config portal SSID and Password
+  Blynk.setConfigPortal("TestPortal-ESP32", "TestPortalPass");
+  // Set config portal IP address
+  Blynk.setConfigPortalIP(IPAddress(192, 168, 232, 1));
+
+  // Set config portal channel, default = 1. Use 0 => random channel from 1-13 to avoid conflict
   Blynk_WF.setConfigPortalChannel(0);
+
+  // From v1.0.6, select either one of these to set static IP + DNS
+  Blynk.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0));
+  //Blynk.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
+  //                           IPAddress(192, 168, 2, 1), IPAddress(8, 8, 8, 8));
+  //Blynk.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
+  //                           IPAddress(4, 4, 4, 4), IPAddress(8, 8, 8, 8));
+
+  // Use this to default DHCP hostname to ESP8266-XXXXXX or ESP32-XXXXXX
+  //Blynk.begin();
+  // Use this to personalize DHCP hostname (RFC952 conformed)
+  // 24 chars max,- only a..z A..Z 0..9 '-' and no '-' as last char
+  //Blynk.begin("ESP32-BT-WM");
     
   Blynk_WF.begin(BT_Device_Name);
 #else
@@ -391,7 +316,7 @@ void setup()
 #if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
 void displayCredentials(void)
 {
-  Serial.println("\nYour stored Credentials :");
+  Serial.println(F("\nYour stored Credentials :"));
 
   for (int i = 0; i < NUM_MENU_ITEMS; i++)
   {

@@ -2,11 +2,12 @@
    BlynkSimpleESP32_WF.h
    For ESP32 using WiFi along with BlueTooth / BLE
 
-   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. Then select either one or both at runtime.
-   Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
+   Then select either one or both at runtime.
+   
+   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.5
 
    Original Blynk Library author:
    @file       BlynkSimpleESP32.h
@@ -15,6 +16,8 @@
    @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
    @date       Oct 2016
    @brief
+   
+   Version: 1.0.6
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -25,6 +28,8 @@
     1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
     1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
                                     Permit special chars # and % in input data.
+    1.0.6   K Hoang      24/04/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
+                                    Auto format SPIFFS. Update examples.
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleEsp32_WF_h

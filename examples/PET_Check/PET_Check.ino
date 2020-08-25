@@ -2,15 +2,14 @@
    PET_Check.ino
    For ESP32 using WiFi along with BlueTooth BLE
 
-   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. Then select either one or both at runtime.
-   Based on Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
+   Then select either one or both at runtime.
+   
+   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.5
-
-   Example Created by Miguel Alexandre Wisintainer
-   See https://nina-b302-scanner-presenca.blogspot.com/2020/06/nina-w102-ble-detector-presenca-de-pet.html
-   Date: 06/06/2020
+   
+   Version: 1.0.6
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -19,89 +18,30 @@
     1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
     1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
     1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
-    1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now.
+    1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
                                     Permit special chars # and % in input data.
+    1.0.6   K Hoang      24/04/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATAa and DRD.
+                                    Auto format SPIFFS. Update examples.
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
-   Important Notes:
-   1) Sketch is ~0.9MB of code because only 1 instance of Blynk if #define BLYNK_USE_BT_ONLY  =>  true
-   2) Sketch is very large (~1.3MB code) because 2 instances of Blynk if #define BLYNK_USE_BT_ONLY  =>    false
-   3) To conmpile, use Partition Scheem with large APP size, such as
-      a) 8MB Flash (3MB APP, 1.5MB FAT) if use EEPROM
-      b) No OTA (2MB APP, 2MB SPIFFS)
-      c) No OTA (2MB APP, 2MB FATFS)  if use EEPROM
-      d) Huge APP (3MB No OTA, 1MB SPIFFS)   <===== Preferable if use SPIFFS
-      e) Minimal SPIFFS (1.9MB APP with OTA, 190KB SPIFFS)
+  Example Created by Miguel Alexandre Wisintainer
+  See https://nina-b302-scanner-presenca.blogspot.com/2020/06/nina-w102-ble-detector-presenca-de-pet.html
+  Date: 06/06/2020
+  
+  Important Notes:
+  1) Sketch is ~0.9MB of code because only 1 instance of Blynk if #define BLYNK_USE_BT_ONLY  =>  true
+  2) Sketch is very large (~1.3MB code) because 2 instances of Blynk if #define BLYNK_USE_BT_ONLY  =>    false
+  3) To conmpile, use Partition Scheem with large APP size, such as
+    a) 8MB Flash (3MB APP, 1.5MB FAT) if use EEPROM
+    b) No OTA (2MB APP, 2MB SPIFFS)
+    c) No OTA (2MB APP, 2MB FATFS)  if use EEPROM
+    d) Huge APP (3MB No OTA, 1MB SPIFFS)   <===== Preferable if use SPIFFS
+    e) Minimal SPIFFS (1.9MB APP with OTA, 190KB SPIFFS)
   *****************************************************************************************************************************/
 
-#ifndef ESP32
-  #error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
-#endif
-
-#define BLYNK_PRINT Serial
-
-#define ESP32_BLE_WF_DEBUG       true
-
-//#define USE_BLYNK_WM      false
-#define USE_BLYNK_WM      true
-
-//#define USE_SPIFFS                  true
-#define USE_SPIFFS                  false
-
-#if (!USE_SPIFFS)
-  // EEPROM_SIZE must be <= 2048 and >= CONFIG_DATA_SIZE
-  #define EEPROM_SIZE    (2 * 1024)
-  // EEPROM_START + CONFIG_DATA_SIZE must be <= EEPROM_SIZE
-  #define EEPROM_START   0
-#endif
-
-// Force some params in Blynk, only valid for library version 1.0.1 and later
-#define TIMEOUT_RECONNECT_WIFI                    10000L
-#define RESET_IF_CONFIG_TIMEOUT                   true
-#define CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET    5
-// Those above #define's must be placed before #include <BlynkSimpleEsp32_WFM.h>
-
-#include <BlynkSimpleEsp32_BLE_WF.h>
-#include <BLEDevice.h>
-#include <BLEServer.h>
-#include "BLEScan.h"
-
-
-#if USE_BLYNK_WM
-  #warning Please select 1.3MB+ for APP (Minimal SPIFFS (1.9MB APP, OTA), HugeAPP(3MB APP, NoOTA) or NoOA(2MB APP)
-  #include <BlynkSimpleEsp32_WFM.h>
-  
-  #define USE_DYNAMIC_PARAMETERS      false
-  
-  /////////////// Start dynamic Credentials ///////////////
-  
-  MenuItem myMenuItems [] = {};
-  
-  uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
-  /////// // End dynamic Credentials ///////////
-
-#else
-
-  #include <BlynkSimpleEsp32_WF.h>
-  
-  String cloudBlynkServer = "blynk-cloud.com";
-  //String cloudBlynkServer = "192.168.2.110";
-  #define BLYNK_SERVER_HARDWARE_PORT    8080
-  char ssid[] = "SSID";
-  char pass[] = "passpass";
-
-  // Blynk token shared between BLE and WiFi
-  char auth[] = "your-token";
-
-  #ifndef LED_BUILTIN
-    #define LED_BUILTIN       2         // Pin D2 mapped to pin GPIO2/ADC12 of ESP32, control on-board LED
-  #endif
-  
-  // For ESP32
-  #define LED_OFF     LOW
-  #define LED_ON      HIGH
-  
-#endif  //USE_BLYNK_WM
+#include "defines.h"
+#include "Credentials.h"
+#include "dynamicParams.h"
 
 bool USE_BLE = true;
 long timePreviousMeassure  = 0;
@@ -141,11 +81,11 @@ void heartBeatPrint(void)
   {
     set_led(HIGH);
     led_ticker.once_ms(111, set_led, (byte) LOW);
-    Serial.print("B");
+    Serial.print(F("B"));    
   }
   else
   {
-    Serial.print("F");
+    Serial.print(F("F"));
   }
 
   if (num == 80)
@@ -155,7 +95,7 @@ void heartBeatPrint(void)
   }
   else if (num++ % 10 == 0)
   {
-    Serial.print(" ");
+    Serial.print(F(" "));
   }
 }
 
@@ -213,7 +153,20 @@ void checkPet(void)
 void setup()
 {
   Serial.begin(115200);
-  Serial.println(F("\nStarting PET-Check-BLE"));
+  while (!Serial);
+
+#if ( USE_SPIFFS)
+  Serial.print(F("\nStarting PET-Check-BLE using SPIFFS"));
+#else
+  Serial.print(F("\nStarting PET-Check-BLE using EEPROM"));
+#endif
+
+#if USE_SSL
+  Serial.println(" with SSL on " + String(ARDUINO_BOARD));
+#else
+  Serial.println(" without SSL on " + String(ARDUINO_BOARD));
+#endif
+
   pinMode(WIFI_BLE_SELECTION_PIN, INPUT_PULLUP);
   
   pinMode(LED_BUILTIN, OUTPUT);
@@ -274,16 +227,19 @@ void setup()
   }
 
   Serial.println(F("Scanning..."));
+  
   BLEDevice::init("");
   //create new scan
   pBLEScan = BLEDevice::getScan(); 
   pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
   
   //active scan uses more power, but get results faster
-  pBLEScan->setActiveScan(true); 
+  pBLEScan->setActiveScan(true);
+  
   pBLEScan->setInterval(100);
   // less or equal setInterval value
-  pBLEScan->setWindow(99);  
+  pBLEScan->setWindow(99);
+  
   // Important, need to keep constant communication to Blynk Server at least once per ~25s
   // Or Blynk will lost and have to (auto)reconnect
   timer.setInterval(10000L, noticeAlive);
