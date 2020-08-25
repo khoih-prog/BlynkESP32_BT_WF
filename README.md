@@ -8,6 +8,31 @@
 
 ---
 
+### Important Note
+
+This [**BlynkESP32_BT_WF**](https://github.com/khoih-prog/BlynkESP32_BT_WF) has just been modified to create the new [**Blynk_Async_ESP32_BT_WF**](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF) in order to use the better and more efficient [**ESPAsyncWebServer Library**](https://github.com/me-no-dev/ESPAsyncWebServer), instead of the (ESP8266)WebServer library.
+
+The new [**Blynk_Async_ESP32_BT_WF**](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF) is based on and sync'ed with [**BlynkESP32_BT_WF**](https://github.com/khoih-prog/BlynkESP32_BT_WF). Therefore, all the features currently supported by this [**BlynkESP32_BT_WF**](https://github.com/khoih-prog/BlynkESP32_BT_WF) will be available to the new library. The code change is to port to the new library is also very negligible, **mostly just changing the include file from `BlynkSimpleEsp32_xyz.h` to `BlynkSimpleEsp32_Async_xyz.h`.**
+
+---
+
+#### Why do we need the new Async [Blynk_Async_ESP32_BT_WF library](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF)
+
+- Using asynchronous network means that you can handle **more than one connection at the same time**
+- **You are called once the request is ready and parsed**
+- When you send the response, you are **immediately ready** to handle other connections while the server is taking care of sending the response in the background
+- **Speed is OMG**
+- **Easy to use API, HTTP Basic and Digest MD5 Authentication (default), ChunkedResponse**
+- Easily extensible to handle **any type of content**
+- Supports Continue 100
+- **Async WebSocket plugin offering different locations without extra servers or ports**
+- Async EventSource (Server-Sent Events) plugin to send events to the browser
+- URL Rewrite plugin for conditional and permanent url rewrites
+- ServeStatic plugin that supports cache, Last-Modified, default index and more
+- Simple template processing engine to handle templates
+
+---
+
 ### Major Releases v1.0.6
 
 1. Add Configurable **Config Portal Title** to be either HostName, BoardName or default undistinguishable names.
