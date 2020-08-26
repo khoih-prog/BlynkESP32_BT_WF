@@ -28,7 +28,7 @@
     1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
     1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
                                     Permit special chars # and % in input data.
-    1.0.6   K Hoang      24/04/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
+    1.0.6   K Hoang      24/08/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
                                     Auto format SPIFFS. Update examples.
  *****************************************************************************************************************************/
 
@@ -1869,7 +1869,7 @@ class BlynkWifi
           BLYNK_LOG1(BLYNK_F("h:UpdEEPROM"));
 #endif
 
-          saveConfigData();
+          saveAllConfigData();
 
           BLYNK_LOG1(BLYNK_F("h:Rst"));
 
