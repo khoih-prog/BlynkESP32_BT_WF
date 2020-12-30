@@ -1,15 +1,15 @@
 /****************************************************************************************************************************
    Geiger_Counter_OLED_BT_WF.ino
-   For ESP32 using WiFi and BlueTooth simultaneously
+   For ESP32 using WiFi along with BlueTooth BLE
 
    BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
    Then select either one or both at runtime.
    
    Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+   Built by Khoi Hoang https://github.com/khoih-prog/BlynkESP32_BT_WF
    Licensed under MIT license
-   
-   Version: 1.0.6
+  
+   Version: 1.1.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -20,8 +20,9 @@
     1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
     1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
                                     Permit special chars # and % in input data.
-    1.0.6   K Hoang      24/04/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATAa and DRD.
+    1.0.6   K Hoang      24/08/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
                                     Auto format SPIFFS. Update examples.
+    1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    Important Notes:
@@ -107,7 +108,7 @@ void sendDatatoBlynk()
 void Serial_Display()
 {
   Serial.print(F("cpm = "));
-  Serial.printf("%4d", countPerMinute);
+  Serial.printf("%4lu", countPerMinute);
   Serial.print(F(" - "));
   Serial.print(F("RadiationValue = "));
   Serial.printf("%5.3f", radiationValue);
@@ -136,7 +137,7 @@ void OLED_Display()
   display.setCursor(40, 20);
   display.println("V");
 
-  if ((radiationValue, 2) < 9.99)
+  if (radiationValue < 9.99)
   {
     display.setTextSize(2);
   }
@@ -188,8 +189,6 @@ void heartBeatPrint(void)
 
 void checkStatus()
 {
-  static float voltage;
-
   if (millis() - timePreviousMeassure > MEASURE_INTERVAL_MS)
   {
     timePreviousMeassure = millis();
@@ -234,16 +233,24 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-#if ( USE_SPIFFS)
-  Serial.print(F("\nStarting Geiger-Counter-OLED-BT-WF using SPIFFS"));
+#if (USE_LITTLEFS)
+  Serial.print(F("\nStarting ESP32_BLE_WF using LITTLEFS"));
+#elif (USE_SPIFFS)
+  Serial.print(F("\nStarting ESP32_BLE_WF using SPIFFS"));  
 #else
-  Serial.print(F("\nStarting Geiger-Counter-OLED-BT-WF using EEPROM"));
+  Serial.print(F("\nStarting ESP32_BLE_WF using EEPROM"));
 #endif
 
 #if USE_SSL
   Serial.println(" with SSL on " + String(ARDUINO_BOARD));
 #else
   Serial.println(" without SSL on " + String(ARDUINO_BOARD));
+#endif
+
+  Serial.println(BLYNK_ESP32_BT_WF_VERSION);
+  
+#if USE_BLYNK_WM  
+  Serial.println(ESP_DOUBLE_RESET_DETECTOR_VERSION);
 #endif
 
   pinMode(GEIGER_INPUT_PIN, INPUT);

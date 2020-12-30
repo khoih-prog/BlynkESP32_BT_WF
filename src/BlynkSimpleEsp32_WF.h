@@ -17,7 +17,7 @@
    @date       Oct 2016
    @brief
    
-   Version: 1.0.6
+   Version: 1.1.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -30,14 +30,19 @@
                                     Permit special chars # and % in input data.
     1.0.6   K Hoang      24/08/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
                                     Auto format SPIFFS. Update examples.
+    1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
  *****************************************************************************************************************************/
+
+#pragma once
 
 #ifndef BlynkSimpleEsp32_WF_h
 #define BlynkSimpleEsp32_WF_h
 
 #ifndef ESP32
-#error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
+  #error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
 #endif
+
+#define BLYNK_ESP32_BT_WF_VERSION       "BlynkESP32_BT_WF v1.1.0"
 
 #define BLYNK_SEND_ATOMIC
 

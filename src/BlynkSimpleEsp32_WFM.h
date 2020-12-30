@@ -17,7 +17,7 @@
    @date       Oct 2016
    @brief
    
-   Version: 1.0.6
+   Version: 1.1.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -30,14 +30,19 @@
                                     Permit special chars # and % in input data.
     1.0.6   K Hoang      24/08/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
                                     Auto format SPIFFS. Update examples.
+    1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples                       
  *****************************************************************************************************************************/
+
+#pragma once
 
 #ifndef BlynkSimpleEsp32_WFM_h
 #define BlynkSimpleEsp32_WFM_h
 
 #ifndef ESP32
-#error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
+  #error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
 #endif
+
+#define BLYNK_ESP32_BT_WF_VERSION       "BlynkESP32_BT_WF v1.1.0"
 
 #define BLYNK_SEND_ATOMIC
 
@@ -53,6 +58,39 @@
 
 #include <WebServer.h>
 
+//////////////////
+#if 1
+
+// LittleFS has higher priority than SPIFFS. 
+// But if not specified any, use SPIFFS to not forcing user to install LITTLEFS library
+#if ! (defined(USE_LITTLEFS) || defined(USE_SPIFFS) )
+  #define USE_SPIFFS      true
+#endif
+
+#if USE_LITTLEFS
+  // Use LittleFS
+  #include "FS.h"
+
+  // The library will be depreciated after being merged to future major Arduino esp32 core release 2.x
+  // At that time, just remove this library inclusion
+  #include <LITTLEFS.h>             // https://github.com/lorol/LITTLEFS
+  
+  FS* filesystem =      &LITTLEFS;
+  #define FileFS        LITTLEFS
+  #warning Using LittleFS in BlynkSimpleESP32_WFM.h
+#elif USE_SPIFFS
+  #include "FS.h"
+  #include <SPIFFS.h>
+  FS* filesystem =      &SPIFFS;
+  #define FileFS        SPIFFS
+  #warning Using SPIFFS in BlynkSimpleESP32_WFM.h
+#else
+  #include <EEPROM.h>
+  #warning Using EEPROM in BlynkSimpleESP32_WFM.h
+#endif
+
+#else
+
 //default to use EEPROM, otherwise, use SPIFFS
 #if USE_SPIFFS
   #include <FS.h>
@@ -61,13 +99,35 @@
   #include <EEPROM.h>
 #endif
 
+#endif
+//////////////////
+
 ///////// NEW for DRD /////////////
 // These defines must be put before #include <ESP_DoubleResetDetector.h>
 // to select where to store DoubleResetDetector's variable.
-// For ESP32, You must select one to be true (EEPROM or SPIFFS)
-// For ESP8266, You must select one to be true (RTC, EEPROM or SPIFFS)
+// For ESP32, You must select one to be true (EEPROM or SPIFFS/LittleFS)
+// For ESP8266, You must select one to be true (RTC, EEPROM or SPIFFS/LittleFS)
 // Otherwise, library will use default EEPROM storage
 #define ESP8266_DRD_USE_RTC     false   //true
+
+/////////////////////
+#if 1
+
+#if USE_LITTLEFS
+  #define ESP_DRD_USE_LITTLEFS    true
+  #define ESP_DRD_USE_SPIFFS      false
+  #define ESP_DRD_USE_EEPROM      false
+#elif USE_SPIFFS
+  #define ESP_DRD_USE_LITTLEFS    false
+  #define ESP_DRD_USE_SPIFFS      true
+  #define ESP_DRD_USE_EEPROM      false
+#else
+  #define ESP_DRD_USE_LITTLEFS    false
+  #define ESP_DRD_USE_SPIFFS      false
+  #define ESP_DRD_USE_EEPROM      true
+#endif
+
+#else
 
 #if USE_SPIFFS
 #define ESP_DRD_USE_EEPROM      false
@@ -76,6 +136,9 @@
 #define ESP_DRD_USE_EEPROM      true
 #define ESP_DRD_USE_SPIFFS      false
 #endif
+
+#endif
+//////////////////
 
 #ifndef DOUBLERESETDETECTOR_DEBUG
 #define DOUBLERESETDETECTOR_DEBUG     false
@@ -344,7 +407,7 @@ class BlynkWifi
         BLYNK_LOG1(noConfigPortal? BLYNK_F("bg: noConfigPortal = true") : BLYNK_F("bg: noConfigPortal = false"));
 #endif
 
-        for (int i = 0; i < NUM_WIFI_CREDENTIALS; i++)
+        for (uint16_t i = 0; i < NUM_WIFI_CREDENTIALS; i++)
         {
           wifiMulti.addAP(BlynkESP32_WM_config.WiFi_Creds[i].wifi_ssid, BlynkESP32_WM_config.WiFi_Creds[i].wifi_pw);
         }
@@ -761,7 +824,7 @@ class BlynkWifi
       return checkSum;
     }
 
-#if USE_SPIFFS
+#if ( USE_LITTLEFS || USE_SPIFFS )
 
   #define  CONFIG_FILENAME              BLYNK_F("/wfm_config.dat")
   #define  CONFIG_FILENAME_BACKUP       BLYNK_F("/wfm_config.bak")
@@ -775,7 +838,7 @@ class BlynkWifi
       int readCheckSum;
       char* readBuffer;
            
-      File file = SPIFFS.open(CREDENTIALS_FILENAME, "r");
+      File file = FileFS.open(CREDENTIALS_FILENAME, "r");
       BLYNK_LOG1(BLYNK_F("LoadCredFile "));
 
       if (!file)
@@ -783,7 +846,7 @@ class BlynkWifi
         BLYNK_LOG1(BLYNK_F("failed"));
 
         // Trying open redundant config file
-        file = SPIFFS.open(CREDENTIALS_FILENAME_BACKUP, "r");
+        file = FileFS.open(CREDENTIALS_FILENAME_BACKUP, "r");
         BLYNK_LOG1(BLYNK_F("LoadBkUpCredFile "));
 
         if (!file)
@@ -798,7 +861,7 @@ class BlynkWifi
       // We dont like to destroy myMenuItems[i].pdata with invalid data
       
       uint16_t maxBufferLength = 0;
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         if (myMenuItems[i].maxlen > maxBufferLength)
           maxBufferLength = myMenuItems[i].maxlen;
@@ -822,7 +885,7 @@ class BlynkWifi
 #endif             
       }
      
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         char* _pointer = readBuffer;
 
@@ -869,7 +932,7 @@ class BlynkWifi
       int readCheckSum;
       totalDataSize = sizeof(BlynkESP32_WM_config) + sizeof(readCheckSum);
       
-      File file = SPIFFS.open(CREDENTIALS_FILENAME, "r");
+      File file = FileFS.open(CREDENTIALS_FILENAME, "r");
       BLYNK_LOG1(BLYNK_F("LoadCredFile "));
 
       if (!file)
@@ -877,7 +940,7 @@ class BlynkWifi
         BLYNK_LOG1(BLYNK_F("failed"));
 
         // Trying open redundant config file
-        file = SPIFFS.open(CREDENTIALS_FILENAME_BACKUP, "r");
+        file = FileFS.open(CREDENTIALS_FILENAME_BACKUP, "r");
         BLYNK_LOG1(BLYNK_F("LoadBkUpCredFile "));
 
         if (!file)
@@ -887,7 +950,7 @@ class BlynkWifi
         }
       }
      
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         char* _pointer = myMenuItems[i].pdata;
         totalDataSize += myMenuItems[i].maxlen;
@@ -926,10 +989,10 @@ class BlynkWifi
     {
       int checkSum = 0;
     
-      File file = SPIFFS.open(CREDENTIALS_FILENAME, "w");
+      File file = FileFS.open(CREDENTIALS_FILENAME, "w");
       BLYNK_LOG1(BLYNK_F("SaveCredFile "));
 
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         char* _pointer = myMenuItems[i].pdata;
 
@@ -966,10 +1029,10 @@ class BlynkWifi
       BLYNK_LOG2(F("CrWCSum=0x"), String(checkSum, HEX));
       
       // Trying open redundant Auth file
-      file = SPIFFS.open(CREDENTIALS_FILENAME_BACKUP, "w");
+      file = FileFS.open(CREDENTIALS_FILENAME_BACKUP, "w");
       BLYNK_LOG1(BLYNK_F("SaveBkUpCredFile "));
 
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         char* _pointer = myMenuItems[i].pdata;
 
@@ -1006,7 +1069,7 @@ class BlynkWifi
 
     void loadConfigData(void)
     {
-      File file = SPIFFS.open(CONFIG_FILENAME, "r");
+      File file = FileFS.open(CONFIG_FILENAME, "r");
       BLYNK_LOG1(BLYNK_F("LoadCfgFile "));
 
       if (!file)
@@ -1014,7 +1077,7 @@ class BlynkWifi
         BLYNK_LOG1(BLYNK_F("failed"));
 
         // Trying open redundant config file
-        file = SPIFFS.open(CONFIG_FILENAME_BACKUP, "r");
+        file = FileFS.open(CONFIG_FILENAME_BACKUP, "r");
         BLYNK_LOG1(BLYNK_F("LoadBkUpCfgFile "));
 
         if (!file)
@@ -1032,7 +1095,7 @@ class BlynkWifi
 
     void saveConfigData(void)
     {
-      File file = SPIFFS.open(CONFIG_FILENAME, "w");
+      File file = FileFS.open(CONFIG_FILENAME, "w");
       BLYNK_LOG1(BLYNK_F("SaveCfgFile "));
 
       int calChecksum = calcChecksum();
@@ -1051,7 +1114,7 @@ class BlynkWifi
       }
 
       // Trying open redundant Auth file
-      file = SPIFFS.open(CONFIG_FILENAME_BACKUP, "w");
+      file = FileFS.open(CONFIG_FILENAME_BACKUP, "w");
       BLYNK_LOG1(BLYNK_F("SaveBkUpCfgFile "));
 
       if (file)
@@ -1072,7 +1135,7 @@ class BlynkWifi
       saveDynamicData();
     }
 
-    // Return false if init new EEPROM or SPIFFS. No more need trying to connect. Go directly to config mode
+    // Return false if init new EEPROM or SPIFFS/LittleFS. No more need trying to connect. Go directly to config mode
     bool getConfigData()
     {
       bool dynamicDataValid;
@@ -1081,11 +1144,11 @@ class BlynkWifi
       hadConfigData = false;
       
       // Format SPIFFS if not yet
-      if (!SPIFFS.begin(true))
+      if (!FileFS.begin(true))
       {
         BLYNK_LOG1(BLYNK_F("SPIFFS failed! Formatting."));
         
-        if (!SPIFFS.begin())
+        if (!FileFS.begin())
         {
           BLYNK_LOG1(BLYNK_F("SPIFFS failed! Pls use EEPROM."));
           return false;
@@ -1109,8 +1172,8 @@ class BlynkWifi
         // Don't need Config Portal anymore
         return true; 
       }
-      else if ( ( SPIFFS.exists(CONFIG_FILENAME)      || SPIFFS.exists(CONFIG_FILENAME_BACKUP) ) &&
-                ( SPIFFS.exists(CREDENTIALS_FILENAME) || SPIFFS.exists(CREDENTIALS_FILENAME_BACKUP) ) )
+      else if ( ( FileFS.exists(CONFIG_FILENAME)      || FileFS.exists(CONFIG_FILENAME_BACKUP) ) &&
+                ( FileFS.exists(CREDENTIALS_FILENAME) || FileFS.exists(CREDENTIALS_FILENAME_BACKUP) ) )
       {
         // if config file exists, load
         loadConfigData();
@@ -1175,7 +1238,7 @@ class BlynkWifi
         strcpy(BlynkESP32_WM_config.blynk_ble_tk,     NO_CONFIG);
         strcpy(BlynkESP32_WM_config.board_name,       NO_CONFIG);
           
-          for (int i = 0; i < NUM_MENU_ITEMS; i++)
+          for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
           {
             // Actual size of pdata is [maxlen + 1]
             memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
@@ -1186,7 +1249,7 @@ class BlynkWifi
         strcpy(BlynkESP32_WM_config.header, BLYNK_BOARD_TYPE);
         
         #if ( BLYNK_WM_DEBUG > 2)
-        for (int i = 0; i < NUM_MENU_ITEMS; i++)
+        for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
         {
           BLYNK_LOG4(BLYNK_F("g:myMenuItems["), i, BLYNK_F("]="), myMenuItems[i].pdata );
         }
@@ -1266,7 +1329,7 @@ class BlynkWifi
       // This is used to store tempo data to calculate checksum to see of data is valid
       // We dont like to destroy myMenuItems[i].pdata with invalid data
       
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         if (myMenuItems[i].maxlen > BUFFER_LEN)
         {
@@ -1276,7 +1339,7 @@ class BlynkWifi
         }
       }
          
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         char* _pointer = readBuffer;
         
@@ -1321,7 +1384,7 @@ class BlynkWifi
            
       totalDataSize = sizeof(BlynkESP32_WM_config) + sizeof(readCheckSum);
       
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         char* _pointer = myMenuItems[i].pdata;
         totalDataSize += myMenuItems[i].maxlen;
@@ -1357,7 +1420,7 @@ class BlynkWifi
       int checkSum = 0;
       uint16_t offset = BLYNK_EEPROM_START + sizeof(BlynkESP32_WM_config);
                 
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         char* _pointer = myMenuItems[i].pdata;
         
@@ -1379,7 +1442,7 @@ class BlynkWifi
       BLYNK_LOG2(F("CrWCSum=0x"), String(checkSum, HEX));
     }
     
-    // Return false if init new EEPROM or SPIFFS. No more need trying to connect. Go directly to config mode
+    // Return false if init new EEPROM or SPIFFS/LittleFS. No more need trying to connect. Go directly to config mode
     bool getConfigData()
     {
       bool dynamicDataValid;
@@ -1467,7 +1530,7 @@ class BlynkWifi
           strcpy(BlynkESP32_WM_config.blynk_ble_tk,     NO_CONFIG);
           strcpy(BlynkESP32_WM_config.board_name,       NO_CONFIG);
 
-          for (int i = 0; i < NUM_MENU_ITEMS; i++)
+          for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
           {
             // Actual size of pdata is [maxlen + 1]
             memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
@@ -1478,7 +1541,7 @@ class BlynkWifi
         strcpy(BlynkESP32_WM_config.header, BLYNK_BOARD_TYPE);
         
         #if ( BLYNK_WM_DEBUG > 2)    
-        for (int i = 0; i < NUM_MENU_ITEMS; i++)
+        for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
         {
           BLYNK_LOG4(BLYNK_F("g:myMenuItems["), i, BLYNK_F("]="), myMenuItems[i].pdata );
         }
@@ -1540,7 +1603,7 @@ class BlynkWifi
     {
 #define BLYNK_CONNECT_TIMEOUT_MS      10000L
 
-      for (int i = 0; i < NUM_BLYNK_CREDENTIALS; i++)
+      for (uint16_t i = 0; i < NUM_BLYNK_CREDENTIALS; i++)
       {
         config(BlynkESP32_WM_config.Blynk_Creds[i].blynk_token,
                BlynkESP32_WM_config.Blynk_Creds[i].blynk_server, BLYNK_SERVER_HARDWARE_PORT);
@@ -1605,7 +1668,7 @@ class BlynkWifi
       
       root_html_template = String(BLYNK_WM_HTML_HEAD)  + BLYNK_WM_FLDSET_START;
       
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {
         pitem = String(BLYNK_WM_HTML_PARAM);
 
@@ -1618,7 +1681,7 @@ class BlynkWifi
       
       root_html_template += String(BLYNK_WM_FLDSET_END) + BLYNK_WM_HTML_BUTTON + BLYNK_WM_HTML_SCRIPT;     
       
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {
         pitem = String(BLYNK_WM_HTML_SCRIPT_ITEM);
         
@@ -1678,7 +1741,7 @@ class BlynkWifi
           result.replace("[[bltk]]",   BlynkESP32_WM_config.blynk_ble_tk);
           result.replace("[[nm]]",     BlynkESP32_WM_config.board_name);
 
-          for (int i = 0; i < NUM_MENU_ITEMS; i++)
+          for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
           {
             String toChange = String("[[") + myMenuItems[i].id + "]]";
             result.replace(toChange, myMenuItems[i].pdata);
@@ -1841,7 +1904,7 @@ class BlynkWifi
             strncpy(BlynkESP32_WM_config.board_name, value.c_str(), sizeof(BlynkESP32_WM_config.board_name) - 1);
         }
 
-        for (int i = 0; i < NUM_MENU_ITEMS; i++)
+        for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
         {
           if (key == myMenuItems[i].id)
           {
@@ -1863,10 +1926,12 @@ class BlynkWifi
         // NEW
         if (number_items_Updated == NUM_CONFIGURABLE_ITEMS + NUM_MENU_ITEMS)
         {
-#if USE_SPIFFS
-          BLYNK_LOG2(BLYNK_F("h:UpdSPIFFS "), CONFIG_FILENAME);
+#if USE_LITTLEFS
+          BLYNK_LOG2(BLYNK_F("h:Updating LittleFS:"), CONFIG_FILENAME);     
+#elif USE_SPIFFS
+          BLYNK_LOG2(BLYNK_F("h:Updating SPIFFS:"), CONFIG_FILENAME);
 #else
-          BLYNK_LOG1(BLYNK_F("h:UpdEEPROM"));
+          BLYNK_LOG1(BLYNK_F("h:Updating EEPROM. Please wait for reset"));
 #endif
 
           saveAllConfigData();
