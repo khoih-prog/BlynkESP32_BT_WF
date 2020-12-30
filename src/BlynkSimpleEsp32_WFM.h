@@ -58,9 +58,6 @@
 
 #include <WebServer.h>
 
-//////////////////
-#if 1
-
 // LittleFS has higher priority than SPIFFS. 
 // But if not specified any, use SPIFFS to not forcing user to install LITTLEFS library
 #if ! (defined(USE_LITTLEFS) || defined(USE_SPIFFS) )
@@ -89,19 +86,6 @@
   #warning Using EEPROM in BlynkSimpleESP32_WFM.h
 #endif
 
-#else
-
-//default to use EEPROM, otherwise, use SPIFFS
-#if USE_SPIFFS
-  #include <FS.h>
-  #include "SPIFFS.h"
-#else
-  #include <EEPROM.h>
-#endif
-
-#endif
-//////////////////
-
 ///////// NEW for DRD /////////////
 // These defines must be put before #include <ESP_DoubleResetDetector.h>
 // to select where to store DoubleResetDetector's variable.
@@ -109,9 +93,6 @@
 // For ESP8266, You must select one to be true (RTC, EEPROM or SPIFFS/LittleFS)
 // Otherwise, library will use default EEPROM storage
 #define ESP8266_DRD_USE_RTC     false   //true
-
-/////////////////////
-#if 1
 
 #if USE_LITTLEFS
   #define ESP_DRD_USE_LITTLEFS    true
@@ -126,19 +107,6 @@
   #define ESP_DRD_USE_SPIFFS      false
   #define ESP_DRD_USE_EEPROM      true
 #endif
-
-#else
-
-#if USE_SPIFFS
-#define ESP_DRD_USE_EEPROM      false
-#define ESP_DRD_USE_SPIFFS      true
-#else
-#define ESP_DRD_USE_EEPROM      true
-#define ESP_DRD_USE_SPIFFS      false
-#endif
-
-#endif
-//////////////////
 
 #ifndef DOUBLERESETDETECTOR_DEBUG
 #define DOUBLERESETDETECTOR_DEBUG     false
