@@ -1,28 +1,30 @@
-/****************************************************************************************************************************
-   Geiger_Counter_OLED_BT_WF.ino
-   For ESP32 using WiFi along with BlueTooth BLE
-
-   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
-   Then select either one or both at runtime.
-   
-   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-   Built by Khoi Hoang https://github.com/khoih-prog/BlynkESP32_BT_WF
-   Licensed under MIT license
+  /****************************************************************************************************************************
+  Geiger_Counter_OLED_BT_WF.ino
+  For ESP32 using WiFi along with BlueTooth BLE
   
-   Version: 1.1.0
+  BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
+  Then select either one or both at runtime.
+  
+  Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+  Built by Khoi Hoang https://github.com/khoih-prog/BlynkESP32_BT_WF
+  Licensed under MIT license
+  
+  Version: 1.1.1
 
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      25/01/2020 Initial coding
-    1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
-    1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
-    1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
-    1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
-    1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
-                                    Permit special chars # and % in input data.
-    1.0.6   K Hoang      24/08/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
-                                    Auto format SPIFFS. Update examples.
-    1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
+  Version Modified By   Date      Comments
+  ------- -----------  ---------- -----------
+  1.0.0   K Hoang      25/01/2020 Initial coding
+  1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
+  1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
+  1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
+  1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
+  1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
+                                  Permit special chars # and % in input data.
+  1.0.6   K Hoang      24/08/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
+                                  Auto format SPIFFS. Update examples.
+  1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
+  1.1.1   K Hoang      31/01/2021 Add functions to control Config Portal (CP) from software or Virtual Switches
+                                  Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    Important Notes:
@@ -79,6 +81,33 @@ BlynkTimer timer;
 
 #include <Ticker.h>
 Ticker     led_ticker;
+
+#define BLYNK_PIN_FORCED_CONFIG           V10
+#define BLYNK_PIN_FORCED_PERS_CONFIG      V20
+
+// Use button V10 (BLYNK_PIN_FORCED_CONFIG) to forced Config Portal
+BLYNK_WRITE(BLYNK_PIN_FORCED_CONFIG)
+{ 
+  if (param.asInt())
+  {
+    Serial.println( F("\nCP Button Hit. Rebooting") ); 
+
+    // This will keep CP once, clear after reset, even you didn't enter CP at all.
+    Blynk.resetAndEnterConfigPortal(); 
+  }
+}
+
+// Use button V20 (BLYNK_PIN_FORCED_PERS_CONFIG) to forced Persistent Config Portal
+BLYNK_WRITE(BLYNK_PIN_FORCED_PERS_CONFIG)
+{ 
+  if (param.asInt())
+  {
+    Serial.println( F("\nPersistent CP Button Hit. Rebooting") ); 
+   
+    // This will keep CP forever, until you successfully enter CP, and Save data to clear the flag.
+    Blynk.resetAndEnterConfigPortalPersistent();
+  }
+}
 
 void IRAM_ATTR countPulse()
 {
@@ -242,11 +271,12 @@ void setup()
 #endif
 
 #if USE_SSL
-  Serial.println(" with SSL on " + String(ARDUINO_BOARD));
+  Serial.print(F(" with SSL on "));
 #else
-  Serial.println(" without SSL on " + String(ARDUINO_BOARD));
+  Serial.print(F(" without SSL on "));
 #endif
 
+  Serial.println(ARDUINO_BOARD);
   Serial.println(BLYNK_ESP32_BT_WF_VERSION);
   
 #if USE_BLYNK_WM  
@@ -325,7 +355,7 @@ void displayCredentials(void)
 {
   Serial.println(F("\nYour stored Credentials :"));
 
-  for (int i = 0; i < NUM_MENU_ITEMS; i++)
+  for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
   {
     Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
   }
@@ -346,7 +376,7 @@ void loop()
 
   if (!displayedCredentials)
   {
-    for (int i = 0; i < NUM_MENU_ITEMS; i++)
+    for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
     {
       if (!strlen(myMenuItems[i].pdata))
       {

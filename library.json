@@ -1,8 +1,8 @@
 {
   "name": "BlynkESP32_BT_WF",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "By design, Blynk user can run ESP32 boards with either WiFi or BT/BLE by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot. This library also supports (auto)connection to MultiWiFi and MultiBlynk, dynamic custom as well as static parameters in Config Portal. Eliminate hardcoding your Wifi and Blynk credentials and configuration data saved in either LittlFS, SPIFFS or EEPROM. Optional default Credentials to be autoloaded into Config Portal to use or change instead of manually input. Static STA IP and DHCP Hostname as well as Config Portal AP channel, IP, SSID, Password can be configured. DoubleDetectDetector feature permits entering Config Portal as requested.",
-  "keywords": "sensors, control, device, smartphone, mobile, app, web, cloud, communication, protocol, iot, m2m, wifi, ble, bt-ble, bluetooth, ethernet, usb, serial, gsm, gprs, 3g, data, esp8266, http, multi-wifi, multi-blynk, littleefs, spiffs, eeprom,",
+  "keywords": "sensors, control, device, smartphone, mobile, app, web, cloud, communication, protocol, iot, m2m, wifi, ble, bt-ble, bluetooth, ethernet, usb, serial, gsm, gprs, 3g, data, esp8266, http, drd, mrd, double-reset, multi-reset, multi-wifi, multi-blynk, littlefs, spiffs, eeprom, webserver, configportal, portal, credentials",
   "authors":
   {
     "name":  "Khoi Hoang",

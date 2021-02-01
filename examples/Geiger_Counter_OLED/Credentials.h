@@ -1,28 +1,13 @@
 /****************************************************************************************************************************
-   Credentials.h
-   For ESP32 using WiFi along with BlueTooth BLE
-
-   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
-   Then select either one or both at runtime.
-   
-   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-   Built by Khoi Hoang https://github.com/khoih-prog/BlynkESP32_BT_WF
-   Licensed under MIT license
+  Credentials.h
+  For ESP32 using WiFi along with BlueTooth BLE
   
-   Version: 1.1.0
-
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      25/01/2020 Initial coding
-    1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
-    1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
-    1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
-    1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
-    1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
-                                    Permit special chars # and % in input data.
-    1.0.6   K Hoang      24/08/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
-                                    Auto format SPIFFS. Update examples.
-    1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
+  BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
+  Then select either one or both at runtime.
+  
+  Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+  Built by Khoi Hoang https://github.com/khoih-prog/BlynkESP32_BT_WF
+  Licensed under MIT license
  *****************************************************************************************************************************/
 
 #ifndef Credentials_h

@@ -1,36 +1,38 @@
 /****************************************************************************************************************************
-   BlynkSimpleEsp32_BLE_WF.h
-   For ESP32 using BLE along with WiFi
+  BlynkSimpleEsp32_BLE_WF.h
+  For ESP32 using WiFiManager and WiFi along with BlueTooth / BLE
 
-   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
-   Then select either one or both at runtime.
-   
-   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
-   Licensed under MIT license
+  BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
+  Then select either one or both at runtime.
 
-   Original Blynk Library author:
-   @file       BlynkSimpleESP32.h
-   @author     Volodymyr Shymanskyy
-   @license    This project is released under the MIT License (MIT)
-   @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
-   @date       Oct 2016
-   @brief
-   
-   Version: 1.1.0
+  Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+  Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+  Licensed under MIT license
 
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      25/01/2020 Initial coding
-    1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
-    1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
-    1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
-    1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
-    1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
-                                    Permit special chars # and % in input data.
-    1.0.6   K Hoang      24/08/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
-                                    Auto format SPIFFS. Update examples.
-    1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
+  Original Blynk Library author:
+  @file       BlynkSimpleESP32.h
+  @author     Volodymyr Shymanskyy
+  @license    This project is released under the MIT License (MIT)
+  @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
+  @date       Oct 2016
+  @brief
+
+  Version: 1.1.1
+
+  Version Modified By   Date      Comments
+  ------- -----------  ---------- -----------
+  1.0.0   K Hoang      25/01/2020 Initial coding
+  1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
+  1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
+  1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
+  1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
+  1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
+                                  Permit special chars # and % in input data.
+  1.0.6   K Hoang      24/08/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
+                                  Auto format SPIFFS. Update examples.
+  1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
+  1.1.1   K Hoang      31/01/2021 Add functions to control Config Portal (CP) from software or Virtual Switches
+                                  Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP  
  *****************************************************************************************************************************/
 
 #pragma once
@@ -42,7 +44,7 @@
   #error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
 #endif
 
-#define BLYNK_ESP32_BT_WF_VERSION       "BlynkESP32_BT_WF v1.1.0"
+#define BLYNK_ESP32_BT_WF_VERSION       "BlynkESP32_BT_WF v1.1.1"
 
 #ifndef BLYNK_INFO_CONNECTION
 #define BLYNK_INFO_CONNECTION "Esp32_BLE"
