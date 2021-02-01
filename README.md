@@ -606,6 +606,33 @@ BlynkTimer timer;
 #include <Ticker.h>
 Ticker     led_ticker;
 
+#define BLYNK_PIN_FORCED_CONFIG           V10
+#define BLYNK_PIN_FORCED_PERS_CONFIG      V20
+
+// Use button V10 (BLYNK_PIN_FORCED_CONFIG) to forced Config Portal
+BLYNK_WRITE(BLYNK_PIN_FORCED_CONFIG)
+{ 
+  if (param.asInt())
+  {
+    Serial.println( F("\nCP Button Hit. Rebooting") ); 
+
+    // This will keep CP once, clear after reset, even you didn't enter CP at all.
+    Blynk.resetAndEnterConfigPortal(); 
+  }
+}
+
+// Use button V20 (BLYNK_PIN_FORCED_PERS_CONFIG) to forced Persistent Config Portal
+BLYNK_WRITE(BLYNK_PIN_FORCED_PERS_CONFIG)
+{ 
+  if (param.asInt())
+  {
+    Serial.println( F("\nPersistent CP Button Hit. Rebooting") ); 
+   
+    // This will keep CP forever, until you successfully enter CP, and Save data to clear the flag.
+    Blynk.resetAndEnterConfigPortalPersistent();
+  }
+}
+
 void set_led(byte status)
 {
   digitalWrite(LED_BUILTIN, status);
@@ -671,6 +698,8 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
+  delay(200);
+
 #if (USE_LITTLEFS)
   Serial.print(F("\nStarting ESP32_BLE_WF using LITTLEFS"));
 #elif (USE_SPIFFS)
@@ -680,11 +709,12 @@ void setup()
 #endif
 
 #if USE_SSL
-  Serial.println(" with SSL on " + String(ARDUINO_BOARD));
+  Serial.print(F(" with SSL on "));
 #else
-  Serial.println(" without SSL on " + String(ARDUINO_BOARD));
+  Serial.print(F(" without SSL on "));
 #endif
 
+  Serial.println(ARDUINO_BOARD);
   Serial.println(BLYNK_ESP32_BT_WF_VERSION);
   
 #if USE_BLYNK_WM  
@@ -783,13 +813,15 @@ void setup()
 }
 
 #if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
-void displayCredentials(void)
+void displayCredentials()
 {
   Serial.println(F("\nYour stored Credentials :"));
 
-  for (int i = 0; i < NUM_MENU_ITEMS; i++)
+  for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
   {
-    Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
+    Serial.print(myMenuItems[i].displayName);
+    Serial.print(F(" = "));
+    Serial.println(myMenuItems[i].pdata);
   }
 }
 #endif
@@ -813,7 +845,7 @@ void loop()
 
   if (!displayedCredentials)
   {
-    for (int i = 0; i < NUM_MENU_ITEMS; i++)
+    for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
     {
       if (!strlen(myMenuItems[i].pdata))
       {
@@ -885,6 +917,8 @@ void loop()
 
 #if !BLYNK_USE_BLE_ONLY
   #if USE_BLYNK_WM
+    #define USE_DYNAMIC_PARAMETERS                    true
+    
     #warning Please select 1.3MB+ for APP (Minimal SPIFFS (1.9MB APP, OTA), HugeAPP(3MB APP, NoOTA) or NoOA(2MB APP)
     #include <BlynkSimpleEsp32_WFM.h>  
   #else
@@ -1008,7 +1042,11 @@ void loop()
 
 #if USE_BLYNK_WM
 
-  #define USE_DYNAMIC_PARAMETERS      true
+#if (USE_DYNAMIC_PARAMETERS)
+  #warning USE_DYNAMIC_PARAMETERS
+#endif
+
+// USE_DYNAMIC_PARAMETERS defined in defined.h
   
   /////////////// Start dynamic Credentials ///////////////
   
