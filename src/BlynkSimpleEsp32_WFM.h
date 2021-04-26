@@ -2317,6 +2317,9 @@ class BlynkWifi
 
         if (key == "" && value == "")
         {
+          // New from v1.2.0         
+          serverSendHeaders();
+          
           String result;
           createHTML(result);
 
