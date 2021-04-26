@@ -16,6 +16,7 @@
 * [Why do we need this BlynkESP32_BT_WF library](#why-do-we-need-this-blynkesp32_bt_wf-library)
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
+  * [Not yet supported Boards](#not-yet-supported-boards)
 * [Changelog](#changelog)
   * [Major Releases v1.2.0](#major-releases-v120)
   * [Releases v1.1.1](#releases-v111)
