@@ -9,7 +9,7 @@
   Built by Khoi Hoang https://github.com/khoih-prog/BlynkESP32_BT_WF
   Licensed under MIT license
   
-  Version: 1.1.1
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -24,7 +24,8 @@
                                   Auto format SPIFFS. Update examples.
   1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
   1.1.1   K Hoang      31/01/2021 Add functions to control Config Portal (CP) from software or Virtual Switches
-                                  Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP
+                                  Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP   
+  1.2.0   K Hoang      24/04/2021 Enable scan of WiFi networks for selection in Configuration Portal and many new features.
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
   Example Created by Miguel Alexandre Wisintainer
@@ -180,6 +181,11 @@ void checkPet(void)
   pBLEScan->clearResults();   
 }
 
+#if USING_CUSTOMS_STYLE
+const char NewCustomsStyle[] /*PROGMEM*/ = "<style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}\
+button{background-color:blue;color:white;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style>";
+#endif
+
 void setup()
 {
   Serial.begin(115200);
@@ -220,6 +226,22 @@ void setup()
 #endif
     // Set config portal channel, defalut = 1. Use 0 => random channel from 1-13 to avoid conflict
     Blynk_WF.setConfigPortalChannel(0);
+
+    //////////////////////////////////////////////
+    
+    #if USING_CUSTOMS_STYLE
+      Blynk.setCustomsStyle(NewCustomsStyle);
+    #endif
+    
+    #if USING_CUSTOMS_HEAD_ELEMENT
+      Blynk.setCustomsHeadElement("<style>html{filter: invert(10%);}</style>");
+    #endif
+    
+    #if USING_CORS_FEATURE  
+      Blynk.setCORSHeader("Your Access-Control-Allow-Origin");
+    #endif
+  
+    //////////////////////////////////////////////
 
     Blynk_WF.begin(BLE_Device_Name);
 #else

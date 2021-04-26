@@ -17,6 +17,7 @@
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
 * [Changelog](#changelog)
+  * [Major Releases v1.2.0](#major-releases-v120)
   * [Releases v1.1.1](#releases-v111)
   * [Major Releases v1.1.0](#major-releases-v110)
   * [Major Releases v1.0.6](#major-releases-v106)
@@ -31,6 +32,7 @@
   * [Use Arduino Library Manager](#use-arduino-library-manager)
   * [Manual Install](#manual-install)
   * [VS Code & PlatformIO](#vs-code--platformio)
+* [Note for Platform IO using ESP32 LittleFS](#note-for-platform-io-using-esp32-littlefs)
 * [HOWTO Use analogRead() with ESP32 running WiFi and/or BlueTooth (BT/BLE)](#howto-use-analogread-with-esp32-running-wifi-andor-bluetooth-btble)
   * [1. ESP32 has 2 ADCs, named ADC1 and ADC2](#1--esp32-has-2-adcs-named-adc1-and-adc2)
   * [2. ESP32 ADCs functions](#2-esp32-adcs-functions)
@@ -42,6 +44,16 @@
   * [ 3. Example of Default Credentials](#3-example-of-default-credentials)
   * [ 4. How to add dynamic parameters from sketch](#4-how-to-add-dynamic-parameters-from-sketch)
   * [ 5. If you don't need to add dynamic parameters](#5-if-you-dont-need-to-add-dynamic-parameters)
+  * [ 6. To use custom HTML Style](#6-to-use-custom-html-style)
+  * [ 7. To use custom Head Elements](#7-to-use-custom-head-elements)
+  * [ 8. To use CORS Header](#8-to-use-cors-header)
+  * [ 9. To use and input only one set of WiFi SSID and PWD](#9-to-use-and-input-only-one-set-of-wifi-ssid-and-pwd)
+    * [ 9.1 If you need to use and input only one set of WiFi SSID/PWD](#91-if-you-need-to-use-and-input-only-one-set-of-wifi-ssidpwd)
+    * [ 9.2 If you need to use both sets of WiFi SSID/PWD](#92-if-you-need-to-use-both-sets-of-wifi-ssidpwd)
+  * [10. To enable auto-scan of WiFi networks for selection in Configuration Portal](#10-to-enable-auto-scan-of-wifi-networks-for-selection-in-configuration-portal)
+    * [10.1 Enable auto-scan of WiFi networks for selection in Configuration Portal](#101-enable-auto-scan-of-wifi-networks-for-selection-in-configuration-portal)
+    * [10.2 Disable manually input SSIDs](#102-disable-manually-input-ssids)
+    * [10.3 Select maximum number of SSIDs in the list](#103-select-maximum-number-of-ssids-in-the-list)
 * [Why using this BlynkESP32_BT_WF with MultiWiFi-MultiBlynk features](#why-using-this-blynkesp32_bt_wf-with-multiwifi-multiblynk-features)
 * [Important Notes for using Dynamic Parameters' ids](#important-notes-for-using-dynamic-parameters-ids)
 * [Examples](#examples)
@@ -54,6 +66,8 @@
   * [ 7. Geiger_Counter_OLED_BT_BLE_WF](examples/Geiger_Counter_OLED_BT_BLE_WF)
   * [ 8. PET_Check](examples/PET_Check)
 * [So, how it works?](#so-how-it-works)
+  * [ 1. Without SCAN_WIFI_NETWORKS](#1-without-scan_wifi_networks)
+  * [ 2. With SCAN_WIFI_NETWORKS](#2-with-scan_wifi_networks)
 * [Example ESP32_BLE_WF](#example-esp32_ble_wf)
   * [1. File ESP32_BLE_WF.ino](#1-file-esp32_ble_wfino)
   * [2. File defines.h](#2-file-definesh) 
@@ -121,11 +135,29 @@ Now from Version 1.0.2, you can eliminate `hardcoding` your Wifi and Blynk crede
 This [**BlynkESP32_BT_WF** library](https://github.com/khoih-prog/BlynkESP32_BT_WF) currently supports these following boards:
 
  1. **ESP32-based boards using EEPROM, SPIFFS or LittleFS**.
+ 
+#### Not yet supported Boards
+ 
+ 
+ 1. **ESP32-S2 and ESP32-C3**
 
 ---
 ---
 
 ## Changelog
+
+### Major Releases v1.2.0
+
+ 1. Enable scan of WiFi networks for selection in Configuration Portal. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10). Now you can select optional **SCAN_WIFI_NETWORKS**, **MANUAL_SSID_INPUT_ALLOWED** to be able to manually input SSID, not only from a scanned SSID lists and **MAX_SSID_IN_LIST** (from 2-15)
+ 2. Fix invalid "blank" Config Data treated as Valid.
+ 3. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
+ 4. Enforce WiFi PWD minimum length of 8 chars
+ 5. Minor enhancement to not display garbage when data is invalid
+ 6. Fix issue of custom Blynk port (different from 8080 or 9443) not working on ESP32. Check [Custom Blynk port not working for BlynkSimpleEsp32_Async_WM.h #4](https://github.com/khoih-prog/Blynk_Async_WM/issues/4)
+ 7. To permit auto-reset after configurable timeout if DRD/MRD or non-persistent forced-CP. Check [**Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27**](https://github.com/khoih-prog/Blynk_WM/issues/27)
+ 8. Fix rare Config Portal bug not updating Config and dynamic Params data successfully in very noisy or weak WiFi situation
+ 9. Tested with [**Latest ESP32 Core 1.0.6**](https://github.com/espressif/arduino-esp32) for ESP32-based boards.
+10. Update examples
 
 ### Releases v1.1.1
 
@@ -189,9 +221,10 @@ With this libraries modifications, we now can compile with both options, then se
 ## Prerequisites
 
 1. [`Arduino IDE 1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. [`Blynk library 0.6.1+`](https://github.com/blynkkk/blynk-library/releases)
-3. [`ESP32 core 1.0.4+`](https://github.com/espressif/arduino-esp32/releases) for ESP32 boards
+2. [`Blynk library 0.6.1+`](https://github.com/blynkkk/blynk-library/releases). Never use the **beta versions** or your request for support will be ignored..
+3. [`ESP32 Core 1.0.6+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
 4. [`ESP_DoubleResetDetector v1.1.1+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector).
+5. [`LittleFS_esp32 v1.0.6+`](https://github.com/lorol/LITTLEFS) for ESP32-based boards using LittleFS. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/LittleFS_esp32.svg?)](https://www.ardu-badge.com/LittleFS_esp32). **Notice**: This [`LittleFS_esp32 library`](https://github.com/lorol/LITTLEFS) has been integrated to Arduino [esp32 core v1.0.6](https://github.com/espressif/arduino-esp32/tree/master/libraries/LITTLEFS).
 
 ---
 
@@ -214,6 +247,33 @@ The best and easiest way is to use `Arduino Library Manager`. Search for `BlynkE
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
 3. Install [**BlynkESP32_BT_WF** library](https://platformio.org/lib/show/11285/BlynkESP32_BT_WF) by using [Library Manager](https://platformio.org/lib/show/11285/BlynkESP32_BT_WF/installation). Search for **BlynkESP32_BT_WF** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
+
+---
+---
+
+### Note for Platform IO using ESP32 LittleFS
+
+#### Necessary only for esp32 core v1.0.6-
+
+From esp32 core v1.0.6+, [`LittleFS_esp32 v1.0.6`](https://github.com/lorol/LITTLEFS) has been included and this step is not necessary anymore.
+
+In Platform IO, to fix the error when using [`LittleFS_esp32 v1.0`](https://github.com/lorol/LITTLEFS) for ESP32-based boards with ESP32 core v1.0.4- (ESP-IDF v3.2-), uncomment the following line
+
+from
+
+```
+//#define CONFIG_LITTLEFS_FOR_IDF_3_2   /* For old IDF - like in release 1.0.4 */
+```
+
+to
+
+```
+#define CONFIG_LITTLEFS_FOR_IDF_3_2   /* For old IDF - like in release 1.0.4 */
+```
+
+It's advisable to use the latest [`LittleFS_esp32 v1.0.5+`](https://github.com/lorol/LITTLEFS) to avoid the issue.
+
+Thanks to [Roshan](https://github.com/solroshan) to report the issue in [Error esp_littlefs.c 'utime_p'](https://github.com/khoih-prog/ESPAsync_WiFiManager/issues/28) 
 
 ---
 ---
@@ -461,7 +521,82 @@ uint16_t NUM_MENU_ITEMS = 0;
 
 ```
 
+#### 6. To use custom HTML Style
+
+```
+const char NewCustomsStyle[] /*PROGMEM*/ = "<style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}\
+button{background-color:blue;color:white;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style>";
+
+...
+
+Blynk.setCustomsStyle(NewCustomsStyle);
+```
+
+#### 7. To use custom Head Elements
+
+
+```
+Blynk.setCustomsHeadElement("<style>html{filter: invert(10%);}</style>");
+```
+
+#### 8. To use CORS Header
+
+```
+Blynk.setCORSHeader("Your Access-Control-Allow-Origin");
+```
+
+#### 9. To use and input only one set of WiFi SSID and PWD
+
+#### 9.1 If you need to use and input only one set of WiFi SSID/PWD
+
+```
+// Permit input only one set of WiFi SSID/PWD. The other can be "NULL or "blank"
+// Default is false (if not defined) => must input 2 sets of SSID/PWD
+#define REQUIRE_ONE_SET_SSID_PW       true
+```
+But it's always advisable to use and input both sets for reliability.
+ 
+#### 9.2 If you need to use both sets of WiFi SSID/PWD
+
+```
+// Permit input only one set of WiFi SSID/PWD. The other can be "NULL or "blank"
+// Default is false (if not defined) => must input 2 sets of SSID/PWD
+#define REQUIRE_ONE_SET_SSID_PW       false
+```
+
+#### 10. To enable auto-scan of WiFi networks for selection in Configuration Portal
+
+#### 10.1 Enable auto-scan of WiFi networks for selection in Configuration Portal
+
+
+```
+#define SCAN_WIFI_NETWORKS                  true
+```
+
+The manual input of SSIDs is default enabled, so that users can input arbitrary SSID, not only from the scanned list. This is for the sample use-cases in which users can input the known SSIDs of another place, then send the boards to that place. The boards can connect to WiFi without users entering Config Portal to re-configure.
+
+#### 10.2 Disable manually input SSIDs
+
+```
+// To disable manually input SSID, only from a scanned SSID lists
+#define MANUAL_SSID_INPUT_ALLOWED           false
+```
+
+This is for normal use-cases in which users can only select an SSID from a scanned list of SSIDs to avoid typo mistakes and/or security.
+
+#### 10.3 Select maximum number of SSIDs in the list
+
+The maximum number of SSIDs in the list is seletable from 2 to 15. If invalid number of SSIDs is selected, the default number of 10 will be used.
+
+
+```
+// From 2-15
+#define MAX_SSID_IN_LIST                    8
+```
+
 ---
+---
+
 
 ### Why using this [BlynkESP32_BT_WF](https://github.com/khoih-prog/BlynkESP32_BT_WF) with MultiWiFi-MultiBlynk features
 
@@ -578,11 +713,29 @@ After you connected, please, go to http://192.168.4.1 or the configured AP IP. T
 
 Enter your WiFi and Blynk Credentials (Server, Port, WiFi/BT/BLE tokens) 
 
+
+### 1. Without SCAN_WIFI_NETWORKS
+
+
 <p align="center">
     <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/ConfigPortal.png">
 </p>
 
+
+### 2. With SCAN_WIFI_NETWORKS
+
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/Input_With_Scan.png">
+</p>
+
+
 Then click `Save`. After you restarted, you will see your built-in LED turned OFF. That means, it connected to your Blynk server successfully.
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/Saved.png">
+</p>
+
 
 ---
 ---
@@ -592,6 +745,18 @@ Then click `Save`. After you restarted, you will see your built-in LED turned OF
 #### 1. File [ESP32_BLE_WF.ino](examples/ESP32_BLE_WF/ESP32_BLE_WF.ino)
 
 ```cpp
+/****************************************************************************************************************************
+   Important Notes:
+   1) Sketch is ~0.9MB of code because only 1 instance of Blynk if #define BLYNK_USE_BT_ONLY  =>  true
+   2) Sketch is very large (~1.3MB code) because 2 instances of Blynk if #define BLYNK_USE_BT_ONLY  =>    false
+   3) To conmpile, use Partition Scheem with large APP size, such as
+      a) 8MB Flash (3MB APP, 1.5MB FAT) if use EEPROM
+      b) No OTA (2MB APP, 2MB SPIFFS)
+      c) No OTA (2MB APP, 2MB FATFS)  if use EEPROM
+      d) Huge APP (3MB No OTA, 1MB SPIFFS)   <===== Preferable if use SPIFFS
+      e) Minimal SPIFFS (1.9MB APP with OTA, 190KB SPIFFS)
+  *****************************************************************************************************************************/
+
 #include "defines.h"
 #include "Credentials.h"
 #include "dynamicParams.h"
@@ -693,6 +858,11 @@ void checkStatus()
 
 char BLE_Device_Name[] = "GeigerCounter-BLE";
 
+#if USING_CUSTOMS_STYLE
+const char NewCustomsStyle[] /*PROGMEM*/ = "<style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}\
+button{background-color:blue;color:white;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style>";
+#endif
+
 void setup()
 {
   Serial.begin(115200);
@@ -756,6 +926,23 @@ void setup()
     //Blynk.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
     //                           IPAddress(4, 4, 4, 4), IPAddress(8, 8, 8, 8));
 
+
+  //////////////////////////////////////////////
+    
+  #if USING_CUSTOMS_STYLE
+    Blynk.setCustomsStyle(NewCustomsStyle);
+  #endif
+  
+  #if USING_CUSTOMS_HEAD_ELEMENT
+    Blynk.setCustomsHeadElement("<style>html{filter: invert(10%);}</style>");
+  #endif
+  
+  #if USING_CORS_FEATURE  
+    Blynk.setCORSHeader("Your Access-Control-Allow-Origin");
+  #endif
+  
+    //////////////////////////////////////////////
+  
     // Use this to default DHCP hostname to ESP8266-XXXXXX or ESP32-XXXXXX
     //Blynk.begin();
     // Use this to personalize DHCP hostname (RFC952 conformed)
@@ -824,23 +1011,9 @@ void displayCredentials()
     Serial.println(myMenuItems[i].pdata);
   }
 }
-#endif
 
-void loop()
+void displayCredentialsInLoop()
 {
-#if BLYNK_USE_BLE_ONLY
-  Blynk_BLE.run();
-#else
-  if (USE_BLE)
-    Blynk_BLE.run();
-  else
-    Blynk_WF.run();
-#endif
-
-  timer.run(); 
-  checkStatus();
-
-#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
   static bool displayedCredentials = false;
 
   if (!displayedCredentials)
@@ -859,7 +1032,27 @@ void loop()
       }
     }
   }
-#endif    
+}
+
+#endif
+
+void loop()
+{
+#if BLYNK_USE_BLE_ONLY
+  Blynk_BLE.run();
+#else
+  if (USE_BLE)
+    Blynk_BLE.run();
+  else
+    Blynk_WF.run();
+#endif
+
+  timer.run(); 
+  checkStatus();
+
+#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
+  displayCredentialsInLoop();
+#endif
 }
 ```
 
@@ -878,7 +1071,7 @@ void loop()
 #define ESP32_BLE_WF_DEBUG            true
 
 #define DOUBLERESETDETECTOR_DEBUG     true
-#define BLYNK_WM_DEBUG                3
+#define BLYNK_WM_DEBUG                1
 
 // Not use #define USE_LITTLEFS and #define USE_SPIFFS  => using SPIFFS for configuration data in WiFiManager
 // (USE_LITTLEFS == false) and (USE_SPIFFS == false)    => using EEPROM for configuration data in WiFiManager
@@ -897,6 +1090,15 @@ void loop()
   // EEPROM_START + CONFIG_DATA_SIZE must be <= EEPROM_SIZE
   #define EEPROM_START   0
 #endif
+
+/////////////////////////////////////////////
+
+// Add customs headers from v1.2.0
+#define USING_CUSTOMS_STYLE                 true
+#define USING_CUSTOMS_HEAD_ELEMENT          true
+#define USING_CORS_FEATURE                  true
+
+/////////////////////////////////////////////
 
 // Force some params in Blynk, only valid for library version 1.0.1 and later
 #define TIMEOUT_RECONNECT_WIFI                    10000L
@@ -918,6 +1120,20 @@ void loop()
 #if !BLYNK_USE_BLE_ONLY
   #if USE_BLYNK_WM
     #define USE_DYNAMIC_PARAMETERS                    true
+
+    /////////////////////////////////////////////
+
+    #define REQUIRE_ONE_SET_SSID_PW             false
+    
+    #define SCAN_WIFI_NETWORKS                  true
+    
+    // To be able to manually input SSID, not from a scanned SSID lists
+    #define MANUAL_SSID_INPUT_ALLOWED           true
+    
+    // From 2-15
+    #define MAX_SSID_IN_LIST                    8
+    
+    /////////////////////////////////////////////
     
     #warning Please select 1.3MB+ for APP (Minimal SPIFFS (1.9MB APP, OTA), HugeAPP(3MB APP, NoOTA) or NoOA(2MB APP)
     #include <BlynkSimpleEsp32_WFM.h>  
@@ -1125,7 +1341,7 @@ The following is the sample terminal output when running example [ESP32_BLE_WF](
 
 ```
 Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.1.1
+BlynkESP32_BT_WF v1.2.0
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1183,7 +1399,7 @@ FF[9799112] id: = HueNet1
 
 ```
 Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.1.1
+BlynkESP32_BT_WF v1.2.0
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1261,7 +1477,7 @@ FFFFF
 
 ```
 Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.1.1
+BlynkESP32_BT_WF v1.2.0
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1347,7 +1563,7 @@ CP Button Hit. Rebooting
 ets Jun  8 2016 00:22:57
 
 Starting ESP32_BLE_WF using LITTLEFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.1.1
+BlynkESP32_BT_WF v1.2.0
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1428,7 +1644,7 @@ Persistent CP Button Hit. Rebooting
 ets Jun  8 2016 00:22:57
 
 Starting ESP32_BLE_WF using LITTLEFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.1.1
+BlynkESP32_BT_WF v1.2.0
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1519,6 +1735,19 @@ Sometimes, the library will only work if you update the board core to the latest
 
 ## Releases
 
+### Major Releases v1.2.0
+
+ 1. Enable scan of WiFi networks for selection in Configuration Portal. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10). Now you can select optional **SCAN_WIFI_NETWORKS**, **MANUAL_SSID_INPUT_ALLOWED** to be able to manually input SSID, not only from a scanned SSID lists and **MAX_SSID_IN_LIST** (from 2-15)
+ 2. Fix invalid "blank" Config Data treated as Valid.
+ 3. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
+ 4. Enforce WiFi PWD minimum length of 8 chars
+ 5. Minor enhancement to not display garbage when data is invalid
+ 6. Fix issue of custom Blynk port (different from 8080 or 9443) not working on ESP32. Check [Custom Blynk port not working for BlynkSimpleEsp32_Async_WM.h #4](https://github.com/khoih-prog/Blynk_Async_WM/issues/4)
+ 7. To permit auto-reset after configurable timeout if DRD/MRD or non-persistent forced-CP. Check [**Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27**](https://github.com/khoih-prog/Blynk_WM/issues/27)
+ 8. Fix rare Config Portal bug not updating Config and dynamic Params data successfully in very noisy or weak WiFi situation
+ 9. Tested with [**Latest ESP32 Core 1.0.6**](https://github.com/espressif/arduino-esp32) for ESP32-based boards.
+10. Update examples
+
 ### Releases v1.1.1
 
 1. Add functions to control Config Portal from software or Virtual Switches. Check [How to trigger a Config Portal from code #25](https://github.com/khoih-prog/Blynk_WM/issues/25)
@@ -1593,29 +1822,34 @@ Submit issues to: [BlynkESP32_BT_WF issues](https://github.com/khoih-prog/BlynkE
 
 ## DONE
 
-  1. Permit EEPROM size and location configurable to avoid conflict with others.
-  2. More flexible to configure reconnection timeout.
-  3. For fresh config data, don't need to wait for connecting timeout before entering config portal.
-  4. If the config data not entered completely (SSID, password, Server and Blynk tokens), entering config portal
-  5. Correct the operation of BUILTIN_LED
-  6. Reduce EEPROM size to 2K from 4K to avoid ESP_ERR_NVS_NOT_ENOUGH_SPACE error.
-  7. Add RFC952 hostname
-  8. Add configurable Config Portal IP, SSID and Password
-  9. Add configurable Static IP, GW, Subnet Mask and 2 DNS Servers' IP Addresses.
- 10. Use dynamically alocated Config Portal WebServer
- 11. Fix BT/BLE login timeout
- 12. Add checksum for config data integrity
- 13. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
- 14. Add MultiWiFi feature to enable reconnect to the best / available WiFi AP.
- 15. Add MultiBlynk feature to enable reconnect to the best / available Blynk Server.
- 16. WiFi Password max length is 63, as in WPA2 standards
- 17. Permit to input special chars such as **%** and **#** into data fields.
- 18. Add Dynamic Custom Parameters with checksum
- 19. Add function to configure AP Channel (fixed or random) to avoid channel conflict.
- 20. Default Credentials and dynamic parameters
- 21. **DoubleDetectDetector** to force Config Portal when double reset is detected within predetermined time, default 10s.
- 22. Configurable Config Portal Title
- 23. Re-structure all examples to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
+ 1. Permit EEPROM size and location configurable to avoid conflict with others.
+ 2. More flexible to configure reconnection timeout.
+ 3. For fresh config data, don't need to wait for connecting timeout before entering config portal.
+ 4. If the config data not entered completely (SSID, password, Server and Blynk tokens), entering config portal
+ 5. Correct the operation of BUILTIN_LED
+ 6. Reduce EEPROM size to 2K from 4K to avoid ESP_ERR_NVS_NOT_ENOUGH_SPACE error.
+ 7. Add RFC952 hostname
+ 8. Add configurable Config Portal IP, SSID and Password
+ 9. Add configurable Static IP, GW, Subnet Mask and 2 DNS Servers' IP Addresses.
+10. Use dynamically alocated Config Portal WebServer
+11. Fix BT/BLE login timeout
+12. Add checksum for config data integrity
+13. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
+14. Add MultiWiFi feature to enable reconnect to the best / available WiFi AP.
+15. Add MultiBlynk feature to enable reconnect to the best / available Blynk Server.
+16. WiFi Password max length is 63, as in WPA2 standards
+17. Permit to input special chars such as **%** and **#** into data fields.
+18. Add Dynamic Custom Parameters with checksum
+19. Add function to configure AP Channel (fixed or random) to avoid channel conflict.
+20. Default Credentials and dynamic parameters
+21. **DoubleDetectDetector** to force Config Portal when double reset is detected within predetermined time, default 10s.
+22. Configurable Config Portal Title
+23. Re-structure all examples to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
+24. Add functions to control Config Portal from software or **Virtual Switches**.
+25. Configurable **Customs HTML Headers**, including Customs Style, Customs Head Elements, CORS Header
+26. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
+27. Enforce WiFi PWD minimum length of 8 chars
+28. Enable **scan of WiFi networks** for selection in Configuration Portal
  
 ---
 ---
@@ -1624,11 +1858,19 @@ Submit issues to: [BlynkESP32_BT_WF issues](https://github.com/khoih-prog/BlynkE
 
 1. Thanks to [Crosswalkersam](https://community.blynk.cc/u/Crosswalkersam) for the original code and request to inspire the work. See [Select connection Type via Switch](https://community.blynk.cc/t/select-connection-type-via-switch/43176)
 2. Thanks to [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for working with, developing, debugging, testing and contributing example [PET_Check](examples/PET_Check). See also [nina-w102-ble-detector-presenca-de-pet](https://nina-b302-scanner-presenca.blogspot.com/2020/06/nina-w102-ble-detector-presenca-de-pet.html)
+3. Thanks to [Thor Johnson](https://github.com/thorathome) and [Thor Johnson in Blynk](https://community.blynk.cc/u/thorathome) to test, find bug, suggest and encourage to add those new features in [Blynk_WiFiManager library](https://github.com/khoih-prog/Blynk_WM) v1.0.13, such as Default Credentials/Dynamic Parms, Configurable Config Portal Title, DRD. The powerful [Async_Blynk_WM_Template](examples/Async_Blynk_WM_Template) is written by [Thor Johnson](https://github.com/thorathome) and is included in the examples with his permission.
+Check these new features thanks to his direct contribution and/or enhancement requests :
+  * [How to trigger a Config Portal from code #25](https://github.com/khoih-prog/Blynk_WM/issues/25)
+  * [Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27](https://github.com/khoih-prog/Blynk_WM/issues/27)
+4. Thanks to [Michael H. "bizprof"](https://github.com/bizprof). With the impressive new feature :
+  - `Enable scan of WiFi networks for selection in Configuration Portal`. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10) leading to v1.2.0
 
 <table>
   <tr>
     <td align="center"><a href="https://github.com/Crosswalkersam"><img src="https://github.com/Crosswalkersam.png" width="100px;" alt="Crosswalkersam"/><br /><sub><b>Crosswalkersam</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/tcpipchip"><img src="https://github.com/tcpipchip.png" width="100px;" alt="tcpipchip"/><br /><sub><b>tcpipchip</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/tcpipchip"><img src="https://github.com/tcpipchip.png" width="100px;" alt="tcpipchip"/><br /><sub><b>⭐️ tcpipchip</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/thorathome"><img src="https://github.com/thorathome.png" width="100px;" alt="thorathome"/><br /><sub><b>⭐️⭐️ Thor Johnson</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/bizprof"><img src="https://github.com/bizprof.png" width="100px;" alt="bizprof"/><br /><sub><b>⭐️⭐️ Michael H. "bizprof"</b></sub></a><br /></td>
   </tr> 
 </table>
 

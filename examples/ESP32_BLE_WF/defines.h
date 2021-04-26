@@ -22,7 +22,7 @@
 #define ESP32_BLE_WF_DEBUG            true
 
 #define DOUBLERESETDETECTOR_DEBUG     true
-#define BLYNK_WM_DEBUG                3
+#define BLYNK_WM_DEBUG                1
 
 // Not use #define USE_LITTLEFS and #define USE_SPIFFS  => using SPIFFS for configuration data in WiFiManager
 // (USE_LITTLEFS == false) and (USE_SPIFFS == false)    => using EEPROM for configuration data in WiFiManager
@@ -41,6 +41,15 @@
   // EEPROM_START + CONFIG_DATA_SIZE must be <= EEPROM_SIZE
   #define EEPROM_START   0
 #endif
+
+/////////////////////////////////////////////
+
+// Add customs headers from v1.2.0
+#define USING_CUSTOMS_STYLE                 true
+#define USING_CUSTOMS_HEAD_ELEMENT          true
+#define USING_CORS_FEATURE                  true
+
+/////////////////////////////////////////////
 
 // Force some params in Blynk, only valid for library version 1.0.1 and later
 #define TIMEOUT_RECONNECT_WIFI                    10000L
@@ -62,6 +71,20 @@
 #if !BLYNK_USE_BLE_ONLY
   #if USE_BLYNK_WM
     #define USE_DYNAMIC_PARAMETERS                    true
+
+    /////////////////////////////////////////////
+
+    #define REQUIRE_ONE_SET_SSID_PW             false
+    
+    #define SCAN_WIFI_NETWORKS                  true
+    
+    // To be able to manually input SSID, not from a scanned SSID lists
+    #define MANUAL_SSID_INPUT_ALLOWED           true
+    
+    // From 2-15
+    #define MAX_SSID_IN_LIST                    8
+    
+    /////////////////////////////////////////////
     
     #warning Please select 1.3MB+ for APP (Minimal SPIFFS (1.9MB APP, OTA), HugeAPP(3MB APP, NoOTA) or NoOA(2MB APP)
     #include <BlynkSimpleEsp32_WFM.h>  

@@ -62,6 +62,20 @@
 #if !BLYNK_USE_BLE_ONLY
   #if USE_BLYNK_WM
     #define USE_DYNAMIC_PARAMETERS                    true
+
+    /////////////////////////////////////////////
+
+  #define REQUIRE_ONE_SET_SSID_PW             false
+  
+  #define SCAN_WIFI_NETWORKS                  true
+  
+  // To be able to manually input SSID, not from a scanned SSID lists
+  #define MANUAL_SSID_INPUT_ALLOWED           true
+  
+  // From 2-15
+  #define MAX_SSID_IN_LIST                    8
+  
+  /////////////////////////////////////////////
     
     #warning Please select 1.3MB+ for APP (Minimal SPIFFS (1.9MB APP, OTA), HugeAPP(3MB APP, NoOTA) or NoOA(2MB APP)
     #include <BlynkSimpleEsp32_WFM.h>  

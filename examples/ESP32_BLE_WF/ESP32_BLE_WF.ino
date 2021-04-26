@@ -1,12 +1,12 @@
 /****************************************************************************************************************************
   ESP32_BLE_WF.ino
-  For ESP32 using WiFiManager and WiFi along with BlueTooth / BLE
-
+  For ESP32 using WiFi along with BlueTooth BLE
+  
   BlynkESP32_BT_WF is a library for inclusion of both ESP32 Blynk BT/BLE and WiFi libraries. 
   Then select either one or both at runtime.
-
+  
   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-  Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+  Built by Khoi Hoang https://github.com/khoih-prog/BlynkESP32_BT_WF
   Licensed under MIT license
 
   Original Blynk Library author:
@@ -17,7 +17,7 @@
   @date       Oct 2016
   @brief
 
-  Version: 1.1.1
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -32,7 +32,8 @@
                                   Auto format SPIFFS. Update examples.
   1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
   1.1.1   K Hoang      31/01/2021 Add functions to control Config Portal (CP) from software or Virtual Switches
-                                  Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP
+                                  Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP   
+  1.2.0   K Hoang      24/04/2021 Enable scan of WiFi networks for selection in Configuration Portal and many new features.
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    Important Notes:
@@ -147,6 +148,11 @@ void checkStatus()
 
 char BLE_Device_Name[] = "GeigerCounter-BLE";
 
+#if USING_CUSTOMS_STYLE
+const char NewCustomsStyle[] /*PROGMEM*/ = "<style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}\
+button{background-color:blue;color:white;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style>";
+#endif
+
 void setup()
 {
   Serial.begin(115200);
@@ -210,6 +216,23 @@ void setup()
     //Blynk.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
     //                           IPAddress(4, 4, 4, 4), IPAddress(8, 8, 8, 8));
 
+
+  //////////////////////////////////////////////
+    
+  #if USING_CUSTOMS_STYLE
+    Blynk.setCustomsStyle(NewCustomsStyle);
+  #endif
+  
+  #if USING_CUSTOMS_HEAD_ELEMENT
+    Blynk.setCustomsHeadElement("<style>html{filter: invert(10%);}</style>");
+  #endif
+  
+  #if USING_CORS_FEATURE  
+    Blynk.setCORSHeader("Your Access-Control-Allow-Origin");
+  #endif
+  
+    //////////////////////////////////////////////
+  
     // Use this to default DHCP hostname to ESP8266-XXXXXX or ESP32-XXXXXX
     //Blynk.begin();
     // Use this to personalize DHCP hostname (RFC952 conformed)
@@ -278,23 +301,9 @@ void displayCredentials()
     Serial.println(myMenuItems[i].pdata);
   }
 }
-#endif
 
-void loop()
+void displayCredentialsInLoop()
 {
-#if BLYNK_USE_BLE_ONLY
-  Blynk_BLE.run();
-#else
-  if (USE_BLE)
-    Blynk_BLE.run();
-  else
-    Blynk_WF.run();
-#endif
-
-  timer.run(); 
-  checkStatus();
-
-#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
   static bool displayedCredentials = false;
 
   if (!displayedCredentials)
@@ -313,5 +322,25 @@ void loop()
       }
     }
   }
-#endif    
+}
+
+#endif
+
+void loop()
+{
+#if BLYNK_USE_BLE_ONLY
+  Blynk_BLE.run();
+#else
+  if (USE_BLE)
+    Blynk_BLE.run();
+  else
+    Blynk_WF.run();
+#endif
+
+  timer.run(); 
+  checkStatus();
+
+#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
+  displayCredentialsInLoop();
+#endif
 }
