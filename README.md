@@ -18,6 +18,7 @@
   * [Currently supported Boards](#currently-supported-boards)
   * [Not yet supported Boards](#not-yet-supported-boards)
 * [Changelog](#changelog)
+  * [Releases v1.2.1](#releases-v121)
   * [Major Releases v1.2.0](#major-releases-v120)
   * [Releases v1.1.1](#releases-v111)
   * [Major Releases v1.1.0](#major-releases-v110)
@@ -147,6 +148,10 @@ This [**BlynkESP32_BT_WF** library](https://github.com/khoih-prog/BlynkESP32_BT_
 
 ## Changelog
 
+### Releases v1.2.1
+
+1. Add auto-reconnect feature for BLE. Check [Handle BLE disconnects #2](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/issues/2)
+
 ### Major Releases v1.2.0
 
  1. Enable scan of WiFi networks for selection in Configuration Portal. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10). Now you can select optional **SCAN_WIFI_NETWORKS**, **MANUAL_SSID_INPUT_ALLOWED** to be able to manually input SSID, not only from a scanned SSID lists and **MAX_SSID_IN_LIST** (from 2-15)
@@ -221,10 +226,10 @@ With this libraries modifications, we now can compile with both options, then se
 
 ## Prerequisites
 
-1. [`Arduino IDE 1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. [`Blynk library 0.6.1+`](https://github.com/blynkkk/blynk-library/releases). Never use the **beta versions** or your request for support will be ignored..
-3. [`ESP32 Core 1.0.6+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
-4. [`ESP_DoubleResetDetector v1.1.1+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector).
+1. [`Arduino IDE 1.8.15+` for Arduino](https://www.arduino.cc/en/Main/Software)
+2. [`Blynk library 0.6.1`](https://github.com/blynkkk/blynk-library/releases).
+3. [`ESP32 Core 1.0.6`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/). Don't use Pre-Releases such as [`ESP32 Core 2.0.0-RC1`](https://github.com/espressif/arduino-esp32/releases/tag/2.0.0-rc1) as it's not supported yet.
+4. [`ESP_DoubleResetDetector library 1.1.1+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector).
 5. [`LittleFS_esp32 v1.0.6+`](https://github.com/lorol/LITTLEFS) for ESP32-based boards using LittleFS. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/LittleFS_esp32.svg?)](https://www.ardu-badge.com/LittleFS_esp32). **Notice**: This [`LittleFS_esp32 library`](https://github.com/lorol/LITTLEFS) has been integrated to Arduino [esp32 core v1.0.6](https://github.com/espressif/arduino-esp32/tree/master/libraries/LITTLEFS).
 
 ---
@@ -1342,7 +1347,7 @@ The following is the sample terminal output when running example [ESP32_BLE_WF](
 
 ```
 Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.0
+BlynkESP32_BT_WF v1.2.1
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1400,7 +1405,7 @@ FF[9799112] id: = HueNet1
 
 ```
 Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.0
+BlynkESP32_BT_WF v1.2.1
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1478,7 +1483,7 @@ FFFFF
 
 ```
 Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.0
+BlynkESP32_BT_WF v1.2.1
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1564,7 +1569,7 @@ CP Button Hit. Rebooting
 ets Jun  8 2016 00:22:57
 
 Starting ESP32_BLE_WF using LITTLEFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.0
+BlynkESP32_BT_WF v1.2.1
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1645,7 +1650,7 @@ Persistent CP Button Hit. Rebooting
 ets Jun  8 2016 00:22:57
 
 Starting ESP32_BLE_WF using LITTLEFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.0
+BlynkESP32_BT_WF v1.2.1
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1736,6 +1741,10 @@ Sometimes, the library will only work if you update the board core to the latest
 
 ## Releases
 
+### Releases v1.2.1
+
+1. Add auto-reconnect feature for BLE. Check [Handle BLE disconnects #2](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/issues/2)
+
 ### Major Releases v1.2.0
 
  1. Enable scan of WiFi networks for selection in Configuration Portal. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10). Now you can select optional **SCAN_WIFI_NETWORKS**, **MANUAL_SSID_INPUT_ALLOWED** to be able to manually input SSID, not only from a scanned SSID lists and **MAX_SSID_IN_LIST** (from 2-15)
@@ -1818,6 +1827,8 @@ Submit issues to: [BlynkESP32_BT_WF issues](https://github.com/khoih-prog/BlynkE
 
 1. Same features for other boards with WiFi / BT
 2. Optimize library so that smaller code size. Currently 2 instances of Blynk coexist and don't share code.
+3. Add support to ESP32_S2 and ESP32_C3
+4. Add support to ESP32 core 2.0.0+
 
 ---
 
@@ -1851,7 +1862,8 @@ Submit issues to: [BlynkESP32_BT_WF issues](https://github.com/khoih-prog/BlynkE
 26. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
 27. Enforce WiFi PWD minimum length of 8 chars
 28. Enable **scan of WiFi networks** for selection in Configuration Portal
- 
+29. Add auto-reconnect feature for BLE.
+
 ---
 ---
 
@@ -1859,12 +1871,13 @@ Submit issues to: [BlynkESP32_BT_WF issues](https://github.com/khoih-prog/BlynkE
 
 1. Thanks to [Crosswalkersam](https://community.blynk.cc/u/Crosswalkersam) for the original code and request to inspire the work. See [Select connection Type via Switch](https://community.blynk.cc/t/select-connection-type-via-switch/43176)
 2. Thanks to [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for working with, developing, debugging, testing and contributing example [PET_Check](examples/PET_Check). See also [nina-w102-ble-detector-presenca-de-pet](https://nina-b302-scanner-presenca.blogspot.com/2020/06/nina-w102-ble-detector-presenca-de-pet.html)
-3. Thanks to [Thor Johnson](https://github.com/thorathome) and [Thor Johnson in Blynk](https://community.blynk.cc/u/thorathome) to test, find bug, suggest and encourage to add those new features in [Blynk_WiFiManager library](https://github.com/khoih-prog/Blynk_WM) v1.0.13, such as Default Credentials/Dynamic Parms, Configurable Config Portal Title, DRD. The powerful [Async_Blynk_WM_Template](examples/Async_Blynk_WM_Template) is written by [Thor Johnson](https://github.com/thorathome) and is included in the examples with his permission.
+3. Thanks to [Thor Johnson](https://github.com/thorathome) and [Thor Johnson in Blynk](https://community.blynk.cc/u/thorathome) to test, find bug, suggest and encourage to add those new features in [Blynk_WiFiManager library](https://github.com/khoih-prog/Blynk_WM) v1.0.13, such as Default Credentials/Dynamic Parms, Configurable Config Portal Title, DRD.
 Check these new features thanks to his direct contribution and/or enhancement requests :
   * [How to trigger a Config Portal from code #25](https://github.com/khoih-prog/Blynk_WM/issues/25)
   * [Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27](https://github.com/khoih-prog/Blynk_WM/issues/27)
 4. Thanks to [Michael H. "bizprof"](https://github.com/bizprof). With the impressive new feature :
   - `Enable scan of WiFi networks for selection in Configuration Portal`. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10) leading to v1.2.0
+5. Thanks to [Valeria](https://github.com/Valeria) to provide the amazing fix to permit BLE auto-reconnect. Check [Handle BLE disconnects #2](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/issues/2)
 
 <table>
   <tr>
@@ -1872,6 +1885,7 @@ Check these new features thanks to his direct contribution and/or enhancement re
     <td align="center"><a href="https://github.com/tcpipchip"><img src="https://github.com/tcpipchip.png" width="100px;" alt="tcpipchip"/><br /><sub><b>⭐️ tcpipchip</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/thorathome"><img src="https://github.com/thorathome.png" width="100px;" alt="thorathome"/><br /><sub><b>⭐️⭐️ Thor Johnson</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/bizprof"><img src="https://github.com/bizprof.png" width="100px;" alt="bizprof"/><br /><sub><b>⭐️⭐️ Michael H. "bizprof"</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/Valeria"><img src="https://github.com/Valeria.png" width="100px;" alt="Valeria"/><br /><sub><b>Valeria</b></sub></a><br /></td>
   </tr> 
 </table>
 

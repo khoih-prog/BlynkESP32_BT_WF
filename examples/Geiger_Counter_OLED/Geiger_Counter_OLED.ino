@@ -9,7 +9,7 @@
   Built by Khoi Hoang https://github.com/khoih-prog/BlynkESP32_BT_WF
   Licensed under MIT license
   
-  Version: 1.2.0
+  Version: 1.2.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -26,6 +26,7 @@
   1.1.1   K Hoang      31/01/2021 Add functions to control Config Portal (CP) from software or Virtual Switches
                                   Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP   
   1.2.0   K Hoang      24/04/2021 Enable scan of WiFi networks for selection in Configuration Portal and many new features.
+  1.2.1   K Hoang      13/08/2021 Add auto-reconnect feature for BLE
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    Important Notes:

@@ -17,7 +17,7 @@
   @date       Oct 2016
   @brief
 
-  Version: 1.2.0
+  Version: 1.2.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -33,7 +33,8 @@
   1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
   1.1.1   K Hoang      31/01/2021 Add functions to control Config Portal (CP) from software or Virtual Switches
                                   Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP   
-  1.2.0   K Hoang      24/04/2021 Enable scan of WiFi networks for selection in Configuration Portal and many new features. 
+  1.2.0   K Hoang      24/04/2021 Enable scan of WiFi networks for selection in Configuration Portal and many new features.
+  1.2.1   K Hoang      13/08/2021 Add auto-reconnect feature for BLE
  *****************************************************************************************************************************/
 
 #pragma once
@@ -47,15 +48,17 @@
         ARDUINO_METRO_ESP32S2 || ARDUINO_MAGTAG29_ESP32S2 || ARDUINO_FUNHOUSE_ESP32S2 || \
         ARDUINO_ADAFRUIT_FEATHER_ESP32S2_NOPSRAM )
   #define BOARD_TYPE      "ESP32-S2"
-  #error ESP32-S2 is not supporteed yet. Please check later.
+  #error ESP32-S2 is not supported yet. Please check later.
 #elif ( ARDUINO_ESP32C3_DEV )
   #define BOARD_TYPE      "ESP32-C3"
-  #error ESP32-C3 is not supporteed yet. Please check later.
+  #error ESP32-C3 is not supported yet. Please check later.
 #else
   #define BOARD_TYPE      "ESP32"
 #endif
 
-#define BLYNK_ESP32_BT_WF_VERSION       "BlynkESP32_BT_WF v1.2.0"
+#if !defined(BLYNK_ASYNC_ESP32_BT_WF_VERSION)
+  #define BLYNK_ESP32_BT_WF_VERSION       "BlynkESP32_BT_WF v1.2.1"
+#endif
 
 #ifndef BLYNK_INFO_CONNECTION
 #define BLYNK_INFO_CONNECTION "ESP32_BT"
