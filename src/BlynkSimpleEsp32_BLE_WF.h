@@ -56,7 +56,7 @@
   #define BOARD_TYPE      "ESP32"
 #endif
 
-#if !defined(BLYNK_ASYNC_ESP32_BT_WF_VERSION)
+#if !defined(BLYNK_ESP32_BT_WF_VERSION)
   #define BLYNK_ESP32_BT_WF_VERSION       "BlynkESP32_BT_WF v1.2.1"
 #endif
 
