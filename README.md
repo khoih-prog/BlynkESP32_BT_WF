@@ -17,18 +17,7 @@
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
   * [Not yet supported Boards](#not-yet-supported-boards)
-* [Changelog](#changelog)
-  * [Releases v1.2.1](#releases-v121)
-  * [Major Releases v1.2.0](#major-releases-v120)
-  * [Releases v1.1.1](#releases-v111)
-  * [Major Releases v1.1.0](#major-releases-v110)
-  * [Major Releases v1.0.6](#major-releases-v106)
-  * [Major Releases v1.0.5](#major-releases-v105)
-  * [Releases v1.0.4](#releases-v104)
-  * [Releases v1.0.3](#releases-v103)
-  * [Releases v1.0.2](#releases-v102)
-  * [Releases v1.0.1](#releases-v101)
-  * [Releases v1.0.0](#releases-v100)
+* [Changelog](changelog.md)
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
   * [Use Arduino Library Manager](#use-arduino-library-manager)
@@ -84,7 +73,6 @@
     * [1.5. Enter persistent ConfigPortal](#15-enter-persistent-configportal)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
-* [Releases](#releases)
 * [Issues](#issues)
 * [TO DO](#to-do)
 * [DONE](#done)
@@ -146,91 +134,13 @@ This [**BlynkESP32_BT_WF** library](https://github.com/khoih-prog/BlynkESP32_BT_
 ---
 ---
 
-## Changelog
-
-### Releases v1.2.1
-
-1. Add auto-reconnect feature for BLE. Check [Handle BLE disconnects #2](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/issues/2)
-
-### Major Releases v1.2.0
-
- 1. Enable scan of WiFi networks for selection in Configuration Portal. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10). Now you can select optional **SCAN_WIFI_NETWORKS**, **MANUAL_SSID_INPUT_ALLOWED** to be able to manually input SSID, not only from a scanned SSID lists and **MAX_SSID_IN_LIST** (from 2-15)
- 2. Fix invalid "blank" Config Data treated as Valid.
- 3. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
- 4. Enforce WiFi PWD minimum length of 8 chars
- 5. Minor enhancement to not display garbage when data is invalid
- 6. Fix issue of custom Blynk port (different from 8080 or 9443) not working on ESP32. Check [Custom Blynk port not working for BlynkSimpleEsp32_Async_WM.h #4](https://github.com/khoih-prog/Blynk_Async_WM/issues/4)
- 7. To permit auto-reset after configurable timeout if DRD/MRD or non-persistent forced-CP. Check [**Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27**](https://github.com/khoih-prog/Blynk_WM/issues/27)
- 8. Fix rare Config Portal bug not updating Config and dynamic Params data successfully in very noisy or weak WiFi situation
- 9. Tested with [**Latest ESP32 Core 1.0.6**](https://github.com/espressif/arduino-esp32) for ESP32-based boards.
-10. Update examples
-
-### Releases v1.1.1
-
-1. Add functions to control Config Portal from software or Virtual Switches. Check [How to trigger a Config Portal from code #25](https://github.com/khoih-prog/Blynk_WM/issues/25)
-2. Fix rare Config Portal bug not updating Config and dynamic Params data successfully in very noisy or weak WiFi situation
-3. To permit autoreset after configurable timeout if DRD/MRD or non-persistent forced-CP. Check [**Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27**](https://github.com/khoih-prog/Blynk_WM/issues/27)
-
-### Major Releases v1.1.0
-
-1. Add support to LittleFS for ESP32 using [LITTLEFS](https://github.com/lorol/LITTLEFS) Library
-2. Clean-up all compiler warnings possible.
-3. Add Table of Contents
-4. Add Version String
-
-### Major Releases v1.0.6
-
-1. Add Configurable **Config Portal Title** to be either HostName, BoardName or default undistinguishable names.
-2. Add optional default **Credentials as well as Dynamic parameters to be optionally autoloaded into Config Portal** to use or change instead of manually input using USE_DEFAULT_CONFIG_DATA.
-3. Add **DoubleDetectDetector** feature to force Config Portal when double reset is detected within predetermined time, default 10s.
-4. Auto format SPIFFS for first time usage.
-5. Examples are redesigned to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
-
-
-#### Major Releases v1.0.5
-
-1. **Multiple WiFi Credentials (SSID, Password)** and system will autoconnect to the best and available WiFi SSID.
-2. **Multiple Blynk Credentials (Server, Token)** and system will autoconnect to the available Blynk Servers.
-3. New **powerful-yet-simple-to-use feature to enable adding dynamic custom parameters** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
-4. Dynamic custom parameters to be saved **automatically in EEPROM, or SPIFFS**.
-5. WiFi Password max length increased to 63 from 31, according to WPA2 standard.
-6. Permit to input special chars such as **%** and **#** into data fields.
-7. Config Portal AP Channel is configurable (either static or random channel) to avoid channel conflict to other APs.
-
-#### Releases v1.0.4
-
-1. Enhance Config Portal GUI.
-2. Reduce code size.
-
-#### Releases v1.0.3
-
-1. Add checksum for config data integrity.
-2. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
- 
-#### Releases v1.0.2
-
-This new version enables user to eliminate `hardcoding` your Wifi and Blynk credentials, thanks to the `Smart Config Portal`, and have Credentials (WiFi SID/PW, Blynk WiFi/BT/BLE Tokens/ Hardware Port) saved in either SPIFFS or EEPROM.
-See more info at [Blynk_WM](https://github.com/khoih-prog/Blynk_WM)
-
-#### Releases v1.0.1
-
-This new version enables user to include both Blynk BT/BLE and WiFi libraries in one sketch, run both **`WiFi and BT/BLE simultaneously`**, or select one to use at runtime after reboot by pressing a switch.
-
-#### Releases v1.0.0
-
-The Blynk ESP32 libraries for BlueTooth, BLE and WiFi, by design, can't coexist. So that when we'd like to use either WiFi or BlueTooth / BLE, it's not possible within the same sketch.
-With this libraries modifications, we now can compile with both options, then select one (WiFi or BT/BLE) to run at run-time by pressing a switch.
-
----
----
-
 ## Prerequisites
 
-1. [`Arduino IDE 1.8.15+` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. [`Blynk library 0.6.1`](https://github.com/blynkkk/blynk-library/releases).
-3. [`ESP32 Core 1.0.6`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/). Don't use Pre-Releases such as [`ESP32 Core 2.0.0-RC1`](https://github.com/espressif/arduino-esp32/releases/tag/2.0.0-rc1) as it's not supported yet.
-4. [`ESP_DoubleResetDetector library 1.1.1+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector).
-5. [`LittleFS_esp32 v1.0.6+`](https://github.com/lorol/LITTLEFS) for ESP32-based boards using LittleFS. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/LittleFS_esp32.svg?)](https://www.ardu-badge.com/LittleFS_esp32). **Notice**: This [`LittleFS_esp32 library`](https://github.com/lorol/LITTLEFS) has been integrated to Arduino [esp32 core v1.0.6](https://github.com/espressif/arduino-esp32/tree/master/libraries/LITTLEFS).
+ 1. [`Arduino IDE 1.8.16+` for Arduino](https://www.arduino.cc/en/Main/Software)
+ 2. [`Blynk library 1.0.1+`](https://github.com/blynkkk/blynk-library/releases). [![Latest release](https://img.shields.io/github/release/blynkkk/blynk-library.svg)](https://github.com/blynkkk/blynk-library/releases/latest/). Never use the `Blynk beta` versions.
+ 3. [`ESP32 Core 2.0.0+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
+ 4. [`ESP_DoubleResetDetector library 1.1.1+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector).
+ 5. [`LittleFS_esp32 v1.0.6+`](https://github.com/lorol/LITTLEFS) for ESP32-based boards using LittleFS. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/LittleFS_esp32.svg?)](https://www.ardu-badge.com/LittleFS_esp32). **Notice**: This [`LittleFS_esp32 library`](https://github.com/lorol/LITTLEFS) has been integrated to Arduino [esp32 core v1.0.6](https://github.com/espressif/arduino-esp32/tree/master/libraries/LITTLEFS).
 
 ---
 
@@ -1347,7 +1257,7 @@ The following is the sample terminal output when running example [ESP32_BLE_WF](
 
 ```
 Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.1
+BlynkESP32_BT_WF v1.2.2
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1405,7 +1315,7 @@ FF[9799112] id: = HueNet1
 
 ```
 Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.1
+BlynkESP32_BT_WF v1.2.2
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1483,7 +1393,7 @@ FFFFF
 
 ```
 Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.1
+BlynkESP32_BT_WF v1.2.2
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1569,7 +1479,7 @@ CP Button Hit. Rebooting
 ets Jun  8 2016 00:22:57
 
 Starting ESP32_BLE_WF using LITTLEFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.1
+BlynkESP32_BT_WF v1.2.2
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1650,7 +1560,7 @@ Persistent CP Button Hit. Rebooting
 ets Jun  8 2016 00:22:57
 
 Starting ESP32_BLE_WF using LITTLEFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.1
+BlynkESP32_BT_WF v1.2.2
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1739,82 +1649,6 @@ Sometimes, the library will only work if you update the board core to the latest
 ---
 ---
 
-## Releases
-
-### Releases v1.2.1
-
-1. Add auto-reconnect feature for BLE. Check [Handle BLE disconnects #2](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/issues/2)
-
-### Major Releases v1.2.0
-
- 1. Enable scan of WiFi networks for selection in Configuration Portal. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10). Now you can select optional **SCAN_WIFI_NETWORKS**, **MANUAL_SSID_INPUT_ALLOWED** to be able to manually input SSID, not only from a scanned SSID lists and **MAX_SSID_IN_LIST** (from 2-15)
- 2. Fix invalid "blank" Config Data treated as Valid.
- 3. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
- 4. Enforce WiFi PWD minimum length of 8 chars
- 5. Minor enhancement to not display garbage when data is invalid
- 6. Fix issue of custom Blynk port (different from 8080 or 9443) not working on ESP32. Check [Custom Blynk port not working for BlynkSimpleEsp32_Async_WM.h #4](https://github.com/khoih-prog/Blynk_Async_WM/issues/4)
- 7. To permit auto-reset after configurable timeout if DRD/MRD or non-persistent forced-CP. Check [**Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27**](https://github.com/khoih-prog/Blynk_WM/issues/27)
- 8. Fix rare Config Portal bug not updating Config and dynamic Params data successfully in very noisy or weak WiFi situation
- 9. Tested with [**Latest ESP32 Core 1.0.6**](https://github.com/espressif/arduino-esp32) for ESP32-based boards.
-10. Update examples
-
-### Releases v1.1.1
-
-1. Add functions to control Config Portal from software or Virtual Switches. Check [How to trigger a Config Portal from code #25](https://github.com/khoih-prog/Blynk_WM/issues/25)
-2. Fix rare Config Portal bug not updating Config and dynamic Params data successfully in very noisy or weak WiFi situation
-3. To permit autoreset after configurable timeout if DRD/MRD or non-persistent forced-CP. Check [**Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27**](https://github.com/khoih-prog/Blynk_WM/issues/27)
-
-### Major Releases v1.1.0
-
-1. Add support to LittleFS for ESP32 using [LITTLEFS](https://github.com/lorol/LITTLEFS) Library
-2. Clean-up all compiler warnings possible.
-3. Add Table of Contents
-4. Add Version String
-
-### Major Releases v1.0.6
-
-1. Add Configurable **Config Portal Title** to be either HostName, BoardName or default undistinguishable names.
-2. Add optional default **Credentials as well as Dynamic parameters to be optionally autoloaded into Config Portal** to use or change instead of manually input using USE_DEFAULT_CONFIG_DATA.
-3. Add **DoubleDetectDetector** feature to force Config Portal when double reset is detected within predetermined time, default 10s.
-4. Auto format SPIFFS for first time usage.
-5. Examples are redesigned to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
-
-#### Major Releases v1.0.5
-
-1. **Multiple WiFi Credentials (SSID, Password)** and system will autoconnect to the best and available WiFi SSID.
-2. **Multiple Blynk Credentials (Server, Token)** and system will autoconnect to the available Blynk Servers.
-3. New **powerful-yet-simple-to-use feature to enable adding dynamic custom parameters** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
-4. Dynamic custom parameters to be saved **automatically in EEPROM, or SPIFFS**.
-5. WiFi Password max length increased to 63 from 31, according to WPA2 standard.
-6. Permit to input special chars such as **%** and **#** into data fields.
-7. Config Portal AP Channel is configurable (either static or random channel) to avoid channel conflict to other APs.
-
-#### Releases v1.0.4
-
-1. Enhance Config Portal GUI.
-2. Reduce code size.
-
-#### Releases v1.0.3
-
-1. Add checksum for config data integrity.
-2. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
- 
-#### Releases v1.0.2
-
-This new version enables user to eliminate `hardcoding` your Wifi and Blynk credentials, thanks to the `Smart Config Portal`, and have Credentials (WiFi SID/PW, Blynk WiFi/BT/BLE Tokens/ Hardware Port) saved in either SPIFFS or EEPROM.
-See more info at [Blynk_WM](https://github.com/khoih-prog/Blynk_WM)
-
-#### Releases v1.0.1
-
-This new version enables user to include both Blynk BT/BLE and WiFi libraries in one sketch, run both **`WiFi and BT/BLE simultaneously`**, or select one to use at runtime after reboot by pressing a switch.
-
-#### Releases v1.0.0
-
-The Blynk ESP32 libraries for BlueTooth, BLE and WiFi, by design, can't coexist. So that when we'd like to use either WiFi or BlueTooth / BLE, it's not possible within the same sketch.
-With this libraries modifications, we now can compile with both options, then select one (WiFi or BT/BLE) to run at run-time by pressing a switch.
-
----
----
 
 ### Issues ###
 

@@ -17,7 +17,7 @@
   @date       Oct 2016
   @brief
 
-  Version: 1.2.1
+  Version: 1.2.2
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -35,6 +35,7 @@
                                   Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP   
   1.2.0   K Hoang      24/04/2021 Enable scan of WiFi networks for selection in Configuration Portal and many new features.
   1.2.1   K Hoang      13/08/2021 Add auto-reconnect feature for BLE
+  1.2.2    K Hoang      13/08/2021 Update `platform.ini` and `library.json` 
  *****************************************************************************************************************************/
 
 #pragma once
@@ -57,7 +58,7 @@
 #endif
 
 #if !defined(BLYNK_ESP32_BT_WF_VERSION)
-  #define BLYNK_ESP32_BT_WF_VERSION       "BlynkESP32_BT_WF v1.2.1"
+  #define BLYNK_ESP32_BT_WF_VERSION       "BlynkESP32_BT_WF v1.2.2"
 #endif
 
 #ifndef BLYNK_INFO_CONNECTION

@@ -8,33 +8,6 @@
   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
   Built by Khoi Hoang https://github.com/khoih-prog/BlynkESP32_BT_WF
   Licensed under MIT license
-
-  Original Blynk Library author:
-  @file       BlynkSimpleESP32.h
-  @author     Volodymyr Shymanskyy
-  @license    This project is released under the MIT License (MIT)
-  @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
-  @date       Oct 2016
-  @brief
-
-  Version: 1.2.1
-
-  Version Modified By   Date      Comments
-  ------- -----------  ---------- -----------
-  1.0.0   K Hoang      25/01/2020 Initial coding
-  1.0.1   K Hoang      27/01/2020 Enable simultaneously running BT/BLE and WiFi
-  1.0.2   K Hoang      04/02/2020 Add Blynk WiFiManager support similar to Blynk_WM library
-  1.0.3   K Hoang      24/02/2020 Add checksum, clearConfigData()
-  1.0.4   K Hoang      14/03/2020 Enhance GUI. Reduce code size.
-  1.0.5   K Hoang      18/04/2020 MultiWiFi/Blynk. Dynamic custom parameters. SSID password maxlen is 63 now. 
-                                  Permit special chars # and % in input data.
-  1.0.6   K Hoang      24/08/2020 Add Configurable Config Portal Title, Add USE_DEFAULT_CONFIG_DATA and DRD.
-                                  Auto format SPIFFS. Update examples.
-  1.1.0   K Hoang      30/12/2020 Add support to LittleFS. Remove possible compiler warnings. Update examples
-  1.1.1   K Hoang      31/01/2021 Add functions to control Config Portal (CP) from software or Virtual Switches
-                                  Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP   
-  1.2.0   K Hoang      24/04/2021 Enable scan of WiFi networks for selection in Configuration Portal and many new features.
-  1.2.1   K Hoang      13/08/2021 Add auto-reconnect feature for BLE
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    Important Notes:
