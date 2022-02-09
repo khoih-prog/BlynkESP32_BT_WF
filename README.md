@@ -1,20 +1,19 @@
-## BlynkESP32_BT_WF
+## Blynk_Async_ESP32_BT_WF
 
-[![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkESP32_BT_WF.svg?)](https://www.ardu-badge.com/BlynkESP32_BT_WF)
-[![GitHub release](https://img.shields.io/github/release/khoih-prog/BlynkESP32_BT_WF.svg)](https://github.com/khoih-prog/BlynkESP32_BT_WF/releases)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/LICENSE)
+[![arduino-library-badge](https://www.ardu-badge.com/badge/Blynk_Async_ESP32_BT_WF.svg?)](https://www.ardu-badge.com/Blynk_Async_ESP32_BT_WF)
+[![GitHub release](https://img.shields.io/github/release/khoih-prog/Blynk_Async_ESP32_BT_WF.svg)](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/releases)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/LICENSE)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
-[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/BlynkESP32_BT_WF.svg)](http://github.com/khoih-prog/BlynkESP32_BT_WF/issues)
+[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/Blynk_Async_ESP32_BT_WF.svg)](http://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/issues)
 
 ---
 ---
 
 ## Table of Contents
 
-* [Important Note](#important-note)
-* [Why do we need the new Async Blynk_Async_ESP32_BT_WF library](#why-do-we-need-the-new-async-blynk_async_esp32_bt_wf-library)
-* [Why do we need this BlynkESP32_BT_WF library](#why-do-we-need-this-blynkesp32_bt_wf-library)
+* [Why do we need this Async Blynk_Async_ESP32_BT_WF library](#why-do-we-need-this-async-blynk_async_esp32_bt_wf-library)
   * [Features](#features)
+  * [Why Async is better](#why-async-is-better)
   * [Currently supported Boards](#currently-supported-boards)
   * [Not yet supported Boards](#not-yet-supported-boards)
 * [Changelog](changelog.md)
@@ -28,7 +27,8 @@
   * [1. ESP32 has 2 ADCs, named ADC1 and ADC2](#1--esp32-has-2-adcs-named-adc1-and-adc2)
   * [2. ESP32 ADCs functions](#2-esp32-adcs-functions)
   * [3. ESP32 WiFi uses ADC2 for WiFi functions](#3-esp32-wifi-uses-adc2-for-wifi-functions)
-* [How to use](#how-to-use)
+* [How to migrate from BlynkESP32_BT_WF library](#how-to-migrate-from-blynkesp32_bt_wf-library)
+* [How to migrate from Blynk](#how-to-migrate-from-blynk)
 * [HOWTO use default Credentials and have them pre-loaded onto Config Portal](#howto-use-default-credentials-and-have-them-pre-loaded-onto-config-portal)
   * [ 1. To load Default Credentials](#1-to-load-default-credentials)
   * [ 2. To use system default to load "blank" when there is no valid Credentials](#2-to-use-system-default-to-load-blank-when-there-is-no-valid-credentials)
@@ -45,30 +45,30 @@
     * [10.1 Enable auto-scan of WiFi networks for selection in Configuration Portal](#101-enable-auto-scan-of-wifi-networks-for-selection-in-configuration-portal)
     * [10.2 Disable manually input SSIDs](#102-disable-manually-input-ssids)
     * [10.3 Select maximum number of SSIDs in the list](#103-select-maximum-number-of-ssids-in-the-list)
-* [Why using this BlynkESP32_BT_WF with MultiWiFi-MultiBlynk features](#why-using-this-blynkesp32_bt_wf-with-multiwifi-multiblynk-features)
+* [Why using this Blynk_Async_ESP32_BT_WF with MultiWiFi-MultiBlynk features](#why-using-this-blynk_async_esp32_bt_wf-with-multiwifi-multiblynk-features)
 * [Important Notes for using Dynamic Parameters' ids](#important-notes-for-using-dynamic-parameters-ids)
 * [Examples](#examples)
-  * [ 1. ESP32_BLE_WF](examples/ESP32_BLE_WF)
-  * [ 2. ESP32_BT_WF](examples/ESP32_BT_WF)
-  * [ 3. Geiger_Counter_BLE](examples/Geiger_Counter_BLE)
-  * [ 4. Geiger_Counter_BT](examples/Geiger_Counter_BT)
-  * [ 5. Geiger_Counter_OLED](examples/Geiger_Counter_OLED)
-  * [ 6. Geiger_Counter_OLED_BT_WF](examples/Geiger_Counter_OLED_BT_WF)
-  * [ 7. Geiger_Counter_OLED_BT_BLE_WF](examples/Geiger_Counter_OLED_BT_BLE_WF)
-  * [ 8. PET_Check](examples/PET_Check)
+  * [ 1. Async_ESP32_BLE_WF](examples/Async_ESP32_BLE_WF)
+  * [ 2. Async_ESP32_BT_WF](examples/Async_ESP32_BT_WF)
+  * [ 3. Async_Geiger_Counter_BLE](examples/Async_Geiger_Counter_BLE)
+  * [ 4. Async_Geiger_Counter_BT](examples/Async_Geiger_Counter_BT)
+  * [ 5. Async_Geiger_Counter_OLED](examples/Async_Geiger_Counter_OLED)
+  * [ 6. Async_Geiger_Counter_OLED_BT_WF](examples/Async_Geiger_Counter_OLED_BT_WF)
+  * [ 7. Async_Geiger_Counter_OLED_BT_BLE_WF](examples/Async_Geiger_Counter_OLED_BT_BLE_WF)
+  * [ 8. Async_PET_Check](examples/Async_PET_Check)
 * [So, how it works?](#so-how-it-works)
   * [ 1. Without SCAN_WIFI_NETWORKS](#1-without-scan_wifi_networks)
   * [ 2. With SCAN_WIFI_NETWORKS](#2-with-scan_wifi_networks)
-* [Example ESP32_BLE_WF](#example-esp32_ble_wf)
-  * [1. File ESP32_BLE_WF.ino](#1-file-esp32_ble_wfino)
+* [Example Async_ESP32_BLE_WF](#example-async_esp32_ble_wf)
+  * [1. File Async_ESP32_BLE_WF.ino](#1-file-async_esp32_ble_wfino)
   * [2. File defines.h](#2-file-definesh) 
   * [3. File Credentials.h](#3-file-credentialsh) 
   * [4. File dynamicParams.h](#4-file-dynamicparamsh) 
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
-  * [1. ESP32_BLE_WF on ESP32_DEV](#1-esp32_ble_wf-on-esp32_dev)
+  * [1. Async_ESP32_BLE_WF on ESP32_DEV](#1-async_esp32_ble_wf-on-esp32_dev)
     * [1.1. No Config Data => Config Portal. Input valid credentials => reboot](#11-no-config-data--config-portal-input-valid-credentials--reboot)
     * [1.2. DRD => Config Portal. Input valid credentials => reboot](#12-drd--config-portal-input-valid-credentials--reboot) 
-    * [1.3. After inputting valid credentials and reboot](#13-after-inputting-valid-credentials-and-reboot) 
+    * [1.3. After inputting valid credentials and reboot](#13-after-inputting-valid-credentials-and-reboot)
     * [1.4. Enter non-persistent ConfigPortal](#14-enter-non-persistent-configportal)
     * [1.5. Enter persistent ConfigPortal](#15-enter-persistent-configportal)
 * [Debug](#debug)
@@ -84,15 +84,21 @@
 ---
 ---
 
-### Important Note
+### Why do we need this Async [Blynk_Async_ESP32_BT_WF library](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF)
 
-This [**BlynkESP32_BT_WF**](https://github.com/khoih-prog/BlynkESP32_BT_WF) has just been modified to create the new [**Blynk_Async_ESP32_BT_WF**](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF) in order to use the better and more efficient [**ESPAsyncWebServer Library**](https://github.com/me-no-dev/ESPAsyncWebServer), instead of the (ESP8266)WebServer library.
+#### Features
 
-The new [**Blynk_Async_ESP32_BT_WF**](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF) is based on and sync'ed with [**BlynkESP32_BT_WF**](https://github.com/khoih-prog/BlynkESP32_BT_WF). Therefore, all the features currently supported by this [**BlynkESP32_BT_WF**](https://github.com/khoih-prog/BlynkESP32_BT_WF) will be available to the new library. The code change is to port to the new library is also very negligible, **mostly just changing the include file from `BlynkSimpleEsp32_xyz.h` to `BlynkSimpleEsp32_Async_xyz.h`.**
+By design, Blynk user can run ESP32 boards with **either WiFi or BT/BLE** by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, **run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot.** 
 
----
+This library also supports (auto)connection to **MultiWiFi and MultiBlynk, dynamic custom as well as static parameters in Config Portal**. Eliminate hardcoding your Wifi and Blynk credentials and configuration data saved in either SPIFFS or EEPROM. 
 
-#### Why do we need the new Async [Blynk_Async_ESP32_BT_WF library](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF)
+Optional default Credentials to be autoloaded into Config Portal to use or change instead of manually input. **Static STA IP and DHCP Hostname as well as Config Portal AP channel, IP, SSID, Password** can be configured. **DoubleDetectDetector** feature permits entering Config Portal as requested.
+
+You can eliminate `hardcoding` your Wifi and Blynk credentials, thanks to the `Smart Config Portal`, and have Credentials (WiFi SID/PW, Blynk WiFi/BT/BLE Tokens/ Hardware Port) saved in either SPIFFS or EEPROM.
+
+Thanks to this [**Blynk_Async_ESP32_BT_WF library**](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF) is based on and sync'ed with [`BlynkESP32_BT_WF library`](https://github.com/khoih-prog/BlynkESP32_BT_WF), all the features currently supported by [`BlynkESP32_BT_WF library`](https://github.com/khoih-prog/BlynkESP32_BT_WF) will be available. Please have a look at [`DONE`](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF#done) or [`DONE in BlynkESP32_BT_WF library`](https://github.com/khoih-prog/BlynkESP32_BT_WF#done) for those too-many-to-list features.
+
+#### Why Async is better
 
 - Using asynchronous network means that you can handle **more than one connection at the same time**
 - **You are called once the request is ready and parsed**
@@ -107,19 +113,6 @@ The new [**Blynk_Async_ESP32_BT_WF**](https://github.com/khoih-prog/Blynk_Async_
 - ServeStatic plugin that supports cache, Last-Modified, default index and more
 - Simple template processing engine to handle templates
 
----
----
-
-### Why do we need this [BlynkESP32_BT_WF library](https://github.com/khoih-prog/BlynkESP32_BT_WF)
-
-#### Features
-
-By design, Blynk user can run ESP32 boards with **either WiFi or BT/BLE** by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, **run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot.**
-
-This library also supports (auto)connection to **MultiWiFi and MultiBlynk, dynamic custom as well as static parameters in Config Portal**. Eliminate hardcoding your Wifi and Blynk credentials and configuration data saved in either SPIFFS or EEPROM.
-
-Now from Version 1.0.2, you can eliminate `hardcoding` your Wifi and Blynk credentials, thanks to the `Smart Config Portal`, and have Credentials (WiFi SID/PW, Blynk WiFi/BT/BLE Tokens/ Hardware Port) saved in either **LittleFS, SPIFFS or EEPROM**.
-
 #### Currently supported Boards
 
 This [**BlynkESP32_BT_WF** library](https://github.com/khoih-prog/BlynkESP32_BT_WF) currently supports these following boards:
@@ -128,41 +121,43 @@ This [**BlynkESP32_BT_WF** library](https://github.com/khoih-prog/BlynkESP32_BT_
  
 #### Not yet supported Boards
  
- 
  1. **ESP32-S2 and ESP32-C3**
+  
+---
+---
 
----
----
 
 ## Prerequisites
 
- 1. [`Arduino IDE 1.8.16+` for Arduino](https://www.arduino.cc/en/Main/Software)
- 2. [`Blynk library 1.0.1+`](https://github.com/blynkkk/blynk-library/releases). [![Latest release](https://img.shields.io/github/release/blynkkk/blynk-library.svg)](https://github.com/blynkkk/blynk-library/releases/latest/). Never use the `Blynk beta` versions.
- 3. [`ESP32 Core 2.0.0+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
- 4. [`ESP_DoubleResetDetector library 1.1.1+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector).
- 5. [`LittleFS_esp32 v1.0.6+`](https://github.com/lorol/LITTLEFS) for ESP32-based boards using LittleFS. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/LittleFS_esp32.svg?)](https://www.ardu-badge.com/LittleFS_esp32). **Notice**: This [`LittleFS_esp32 library`](https://github.com/lorol/LITTLEFS) has been integrated to Arduino [esp32 core v1.0.6](https://github.com/espressif/arduino-esp32/tree/master/libraries/LITTLEFS).
-
+1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
+2. [`Blynk library 1.0.1`](https://github.com/blynkkk/blynk-library/releases).
+3. [`ESP32 Core 2.0.2+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
+4. [`ESP_DoubleResetDetector library 1.2.1+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector).
+5. [`ESPAsyncWebServer v1.2.3+`](https://github.com/me-no-dev/ESPAsyncWebServer)
+6. [`AsyncTCP v1.1.1+`](https://github.com/me-no-dev/AsyncTCP)
+7. [`LittleFS_esp32 v1.0.6+`](https://github.com/lorol/LITTLEFS) for ESP32-based boards using LittleFS. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/LittleFS_esp32.svg?)](https://www.ardu-badge.com/LittleFS_esp32). **Notice**: This [`LittleFS_esp32 library`](https://github.com/lorol/LITTLEFS) has been integrated to Arduino [esp32 core v1.0.6](https://github.com/espressif/arduino-esp32/tree/master/libraries/LITTLEFS).
+ 
 ---
 
 ## Installation
 
 ### Use Arduino Library Manager
-
-The best and easiest way is to use `Arduino Library Manager`. Search for `BlynkESP32_BT_WF`, then select / install the latest version. You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkESP32_BT_WF.svg?)](https://www.ardu-badge.com/BlynkESP32_BT_WF) for more detailed instructions.
+The best and easiest way is to use `Arduino Library Manager`. Search for `Blynk_Async_ESP32_BT_WF`, then select / install the latest version. You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/Blynk_Async_ESP32_BT_WF.svg?)](https://www.ardu-badge.com/Blynk_Async_ESP32_BT_WF) for more detailed instructions.
 
 ### Manual Install
 
-1. Navigate to [BlynkESP32_BT_WF](https://github.com/khoih-prog/BlynkESP32_BT_WF) page.
-2. Download the latest release `BlynkESP32_BT_WF-master.zip`.
-3. Extract the zip file to `BlynkESP32_BT_WF-master` directory 
-4. Copy the whole `BlynkESP32_BT_WF-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+1. Navigate to [Blynk_Async_ESP32_BT_WF](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF) page.
+2. Download the latest release `Blynk_Async_ESP32_BT_WF-master.zip`.
+3. Extract the zip file to `Blynk_Async_ESP32_BT_WF-master` directory 
+4. Copy the whole `Blynk_Async_ESP32_BT_WF-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
 ### VS Code & PlatformIO:
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install [**BlynkESP32_BT_WF** library](https://platformio.org/lib/show/11285/BlynkESP32_BT_WF) by using [Library Manager](https://platformio.org/lib/show/11285/BlynkESP32_BT_WF/installation). Search for **BlynkESP32_BT_WF** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**Blynk_Async_ESP32_BT_WF** library](https://platformio.org/lib/show/11093/Blynk_Async_ESP32_BT_WF) by using [Library Manager](https://platformio.org/lib/show/11093/Blynk_Async_ESP32_BT_WF/installation). Search for **Blynk_Async_ESP32_BT_WF** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
+
 
 ---
 ---
@@ -230,19 +225,27 @@ Look in file [**adc_common.c**](https://github.com/espressif/esp-idf/blob/master
 - Use ADC1, and pins GPIO32-GPIO39
 - If somehow it's a must to use those pins serviced by ADC2 (**GPIO0, 2, 4, 12, 13, 14, 15, 25, 26 and 27**), use the **fix mentioned at the end** of [**ESP_WiFiManager Issue 39: Not able to read analog port when using the autoconnect example**](https://github.com/khoih-prog/ESP_WiFiManager/issues/39) to work with ESP32 WiFi/BlueTooth (BT/BLE).
 
-
 ---
 ---
 
-### How to use
+### How to migrate from [BlynkESP32_BT_WF library](https://github.com/khoih-prog/BlynkESP32_BT_WF) 
 
-In your code, replace:
+In your code, just replacing
 
-1. `BlynkSimpleEsp32_BT.h`    with `BlynkSimpleEsp32_BT_WF.h`
-2. `BlynkSimpleEsp32_BLE.h`   with `BlynkSimpleEsp32_BLE_WF.h`
+1. `BlynkSimpleEsp32_WF.h`      with `BlynkSimpleEsp32_Async_WF.h`
+2. `BlynkSimpleEsp32_WFM.h`     with `BlynkSimpleEsp32_Async_WFM.h`
+3. `BlynkSimpleEsp32_BT_WF.h`   with `BlynkSimpleEsp32_Async_BT_WF.h`
+4. `BlynkSimpleEsp32_BLE_WF.h`  with `BlynkSimpleEsp32_Async_BLE_WF.h`
+
+### How to migrate from Blynk
+
+In your code, replace
+
+1. `BlynkSimpleEsp32_BT.h`    with `BlynkSimpleEsp32_Async_BT_WF.h`
+2. `BlynkSimpleEsp32_BLE.h`   with `BlynkSimpleEsp32_Async_BLE_WF.h`
 3. 
-  - `BlynkSimpleEsp32.h`       with `BlynkSimpleEsp32_WFM.h` if **using** WiFiManager's Config Portal features
-  - `BlynkSimpleEsp32.h`       with `BlynkSimpleEsp32_WF.h`  if **not using** WiFiManager's Config Portal features
+  - `BlynkSimpleEsp32.h`       with `BlynkSimpleEsp32_Async_WFM.h` if **using** WiFiManager's Config Portal features
+  - `BlynkSimpleEsp32.h`       with `BlynkSimpleEsp32_Async_WF.h`  if **not using** WiFiManager's Config Portal features
   
 4. Then replace WiFi's `Blynk.begin(...)` with :
 
@@ -264,7 +267,7 @@ or
 
 See this example and modify as necessary
 
-#### 1. To load [Default Credentials](examples/ESP32_BLE_WF/Credentials.h)
+#### 1. To load [Default Credentials](examples/Async_ESP32_BLE_WF/Credentials.h)
 
 ```cpp
 bool LOAD_DEFAULT_CONFIG_DATA = true;
@@ -276,13 +279,13 @@ bool LOAD_DEFAULT_CONFIG_DATA = true;
 bool LOAD_DEFAULT_CONFIG_DATA = false;
 ```
 
-#### 3. Example of [Default Credentials](examples/ESP32_BLE_WF/Credentials.h)
+#### 3. Example of [Default Credentials](examples/Async_Async_ESP32_BLE_WF/Credentials.h)
 
 ```cpp
   /// Start Default Config Data //////////////////
   
   /*
-    // Defined in <BlynkSimpleESP32_WFM.h>
+    // Defined in <BlynkSimpleESP32_Async_WFM.h>
   
     #define SSID_MAX_LEN      32
     #define PASS_MAX_LEN      64
@@ -360,7 +363,7 @@ bool LOAD_DEFAULT_CONFIG_DATA = false;
   
   /////////////// Start dynamic Credentials ///////////////
   
-  //Defined in <BlynkSimpleESP32_WFM.h>
+  //Defined in <BlynkSimpleESP32_Async_WFM.h>
   /**************************************
     #define MAX_ID_LEN                5
     #define MAX_DISPLAY_NAME_LEN      16
@@ -514,7 +517,7 @@ The maximum number of SSIDs in the list is seletable from 2 to 15. If invalid nu
 ---
 
 
-### Why using this [BlynkESP32_BT_WF](https://github.com/khoih-prog/BlynkESP32_BT_WF) with MultiWiFi-MultiBlynk features
+### Why using this [Blynk_Async_ESP32_BT_WF](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF) with MultiWiFi-MultiBlynk features
 
 You can see that the system ***automatically detects and connects to the best or avaiable WiFi APs and/or Blynk Servers***, whenever interruption happens. This feature is very useful for systems requiring high degree of reliability.
 
@@ -547,6 +550,7 @@ void loop()
   ...
 }
 ```
+
 ---
 ---
 
@@ -576,32 +580,31 @@ Please be noted that the following ***reserved names are already used in library
 
 ### Examples
 
-
-1. [ESP32_BLE_WF](examples/ESP32_BLE_WF)
-2. [ESP32_BT_WF](examples/ESP32_BT_WF)
-3. [Geiger_Counter_BLE](examples/Geiger_Counter_BLE)
-4. [Geiger_Counter_BT](examples/Geiger_Counter_BT)
-5. [Geiger_Counter_OLED](examples/Geiger_Counter_OLED)
-6. [Geiger_Counter_OLED_BT_WF](examples/Geiger_Counter_OLED_BT_WF)
-7. [Geiger_Counter_OLED_BT_BLE_WF](examples/Geiger_Counter_OLED_BT_BLE_WF)
-8. [PET_Check](examples/PET_Check)
+1. [Async_ESP32_BLE_WF](examples/Async_ESP32_BLE_WF)
+2. [Async_ESP32_BT_WF](examples/Async_ESP32_BT_WF)
+3. [Async_Geiger_Counter_BLE](examples/Async_Geiger_Counter_BLE)
+4. [Async_Geiger_Counter_BT](examples/Async_Geiger_Counter_BT)
+5. [Async_Geiger_Counter_OLED](examples/Async_Geiger_Counter_OLED)
+6. [Async_Geiger_Counter_OLED_BT_WF](examples/Async_Geiger_Counter_OLED_BT_WF)
+7. [Async_Geiger_Counter_OLED_BT_BLE_WF](examples/Async_Geiger_Counter_OLED_BT_BLE_WF)
+8. [Async_PET_Check](examples/Async_PET_Check)
 
 and real-life project [Hack GMC Geigercounter With Blynk](https://www.instructables.com/id/Hack-GMC-Geigercounter-With-Blynk/) of  [Crosswalkersam](https://www.instructables.com/member/Crosswalkersam/)
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/examples/Geiger_Counter_OLED/pics/Box1.jpg">
+    <img src="https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/examples/Async_Geiger_Counter_OLED/pics/Box1.jpg">
 </p>
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/examples/Geiger_Counter_OLED/pics/Box2.jpg">
+    <img src="https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/examples/Async_Geiger_Counter_OLED/pics/Box2.jpg">
 </p>
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/examples/Geiger_Counter_OLED/pics/Schematics.jpg">
+    <img src="https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/examples/Async_Geiger_Counter_OLED/pics/Schematics.jpg">
 </p>
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/examples/Geiger_Counter_OLED/pics/Blynk.jpg">
+    <img src="https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/examples/Async_Geiger_Counter_OLED/pics/Blynk.jpg">
 </p>
 
 ---
@@ -618,23 +621,22 @@ Blynk.setConfigPortal("TestPortal-ESP32", "TestPortalPass");
 Connect to it using password `MyESP_xxxxxx` or configurable `TestPortalPass`.
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/WiFi_AP.jpg">
+    <img src="https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/pics/WiFi_AP.jpg">
 </p>
 
 After you connected, please, go to http://192.168.4.1 or the configured AP IP. The Config Portal screen will appear:
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/Main.png">
+    <img src="https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/pics/Main.png">
 </p>
 
 Enter your WiFi and Blynk Credentials (Server, Port, WiFi/BT/BLE tokens) 
-
 
 ### 1. Without SCAN_WIFI_NETWORKS
 
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/ConfigPortal.png">
+    <img src="https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/pics/ConfigPortal.png">
 </p>
 
 
@@ -642,23 +644,23 @@ Enter your WiFi and Blynk Credentials (Server, Port, WiFi/BT/BLE tokens)
 
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/Input_With_Scan.png">
+    <img src="https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/pics/Input_With_Scan.png">
 </p>
 
 
 Then click `Save`. After you restarted, you will see your built-in LED turned OFF. That means, it connected to your Blynk server successfully.
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/pics/Saved.png">
+    <img src="https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/pics/Saved.png">
 </p>
 
 
 ---
 ---
 
-## Example [ESP32_BLE_WF](examples/ESP32_BLE_WF)
+### Example [Async_ESP32_BLE_WF](examples/Async_ESP32_BLE_WF)
 
-#### 1. File [ESP32_BLE_WF.ino](examples/ESP32_BLE_WF/ESP32_BLE_WF.ino)
+#### 1. File [Async_ESP32_BLE_WF.ino](examples/Async_ESP32_BLE_WF/Async_ESP32_BLE_WF.ino)
 
 ```cpp
 /****************************************************************************************************************************
@@ -687,6 +689,8 @@ BlynkTimer timer;
 #include <Ticker.h>
 Ticker     led_ticker;
 
+#if USE_BLYNK_WM
+
 #define BLYNK_PIN_FORCED_CONFIG           V10
 #define BLYNK_PIN_FORCED_PERS_CONFIG      V20
 
@@ -713,6 +717,7 @@ BLYNK_WRITE(BLYNK_PIN_FORCED_PERS_CONFIG)
     Blynk.resetAndEnterConfigPortalPersistent();
   }
 }
+#endif
 
 void set_led(byte status)
 {
@@ -787,11 +792,11 @@ void setup()
   delay(200);
 
 #if (USE_LITTLEFS)
-  Serial.print(F("\nStarting ESP32_BLE_WF using LITTLEFS"));
+  Serial.print(F("\nStarting Async_ESP32_BLE_WF using LITTLEFS"));
 #elif (USE_SPIFFS)
-  Serial.print(F("\nStarting ESP32_BLE_WF using SPIFFS"));  
+  Serial.print(F("\nStarting Async_ESP32_BLE_WF using SPIFFS"));  
 #else
-  Serial.print(F("\nStarting ESP32_BLE_WF using EEPROM"));
+  Serial.print(F("\nStarting Async_ESP32_BLE_WF using EEPROM"));
 #endif
 
 #if USE_SSL
@@ -801,7 +806,7 @@ void setup()
 #endif
 
   Serial.println(ARDUINO_BOARD);
-  Serial.println(BLYNK_ESP32_BT_WF_VERSION);
+  Serial.println(BLYNK_ASYNC_ESP32_BT_WF_VERSION);
   
 #if USE_BLYNK_WM  
   Serial.println(ESP_DOUBLE_RESET_DETECTOR_VERSION);
@@ -842,23 +847,22 @@ void setup()
     //Blynk.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
     //                           IPAddress(4, 4, 4, 4), IPAddress(8, 8, 8, 8));
 
-
-  //////////////////////////////////////////////
-    
-  #if USING_CUSTOMS_STYLE
-    Blynk.setCustomsStyle(NewCustomsStyle);
-  #endif
-  
-  #if USING_CUSTOMS_HEAD_ELEMENT
-    Blynk.setCustomsHeadElement("<style>html{filter: invert(10%);}</style>");
-  #endif
-  
-  #if USING_CORS_FEATURE  
-    Blynk.setCORSHeader("Your Access-Control-Allow-Origin");
-  #endif
-  
     //////////////////////////////////////////////
-  
+    
+    #if USING_CUSTOMS_STYLE
+      Blynk.setCustomsStyle(NewCustomsStyle);
+    #endif
+    
+    #if USING_CUSTOMS_HEAD_ELEMENT
+      Blynk.setCustomsHeadElement("<style>html{filter: invert(10%);}</style>");
+    #endif
+    
+    #if USING_CORS_FEATURE  
+      Blynk.setCORSHeader("Your Access-Control-Allow-Origin");
+    #endif
+    
+    //////////////////////////////////////////////
+
     // Use this to default DHCP hostname to ESP8266-XXXXXX or ESP32-XXXXXX
     //Blynk.begin();
     // Use this to personalize DHCP hostname (RFC952 conformed)
@@ -972,7 +976,7 @@ void loop()
 }
 ```
 
-#### 2. File [defines.h](examples/ESP32_BLE_WF/defines.h)
+#### 2. File [defines.h](examples/Async_ESP32_BLE_WF/defines.h)
 
 ```cpp
 #ifndef defines_h
@@ -1020,13 +1024,12 @@ void loop()
 #define TIMEOUT_RECONNECT_WIFI                    10000L
 #define RESET_IF_CONFIG_TIMEOUT                   true
 #define CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET    5
-
-// Those above #define's must be placed before #include <BlynkSimpleESP32_WFM.h>
+// Those above #define's must be placed before #include <BlynkSimpleESP32_Async_WFM.h>
 
 //#define BLYNK_USE_BLE_ONLY      true
 #define BLYNK_USE_BLE_ONLY      false
 
-#include <BlynkSimpleEsp32_BLE_WF.h>
+#include <BlynkSimpleEsp32_Async_BLE_WF.h>
 #include <BLEDevice.h>
 #include <BLEServer.h>
 
@@ -1052,15 +1055,15 @@ void loop()
     /////////////////////////////////////////////
     
     #warning Please select 1.3MB+ for APP (Minimal SPIFFS (1.9MB APP, OTA), HugeAPP(3MB APP, NoOTA) or NoOA(2MB APP)
-    #include <BlynkSimpleEsp32_WFM.h>  
+    #include <BlynkSimpleEsp32_Async_WFM.h>  
   #else
-    #include <BlynkSimpleEsp32_WF.h>
+    #include <BlynkSimpleEsp32_Async_WF.h>
     
     String cloudBlynkServer = "account.duckdns.org";
     //String cloudBlynkServer = "192.168.2.110";
     #define BLYNK_SERVER_HARDWARE_PORT    8080
     char ssid[] = "SSID";
-    char pass[] = "PASS";
+    char pass[] = "PASSPASS";
   #endif
 #endif
 
@@ -1073,14 +1076,14 @@ void loop()
   #define LED_BUILTIN       2         // Pin D2 mapped to pin GPIO2/ADC12 of ESP32, control on-board LED
 #endif
 
-#define HOST_NAME   "ESP32-BLE-WF"
+#define HOST_NAME   "ASYNC-ESP32-BLE-WF"
 
 #endif      //defines_h
 ```
 
 ---
 
-#### 3. File [Credentials.h](examples/ESP32_BLE_WF/Credentials.h)
+#### 3. File [Credentials.h](examples/Async_ESP32_BLE_WF/Credentials.h)
 
 ```cpp
 #ifndef Credentials_h
@@ -1091,7 +1094,7 @@ void loop()
   /// Start Default Config Data //////////////////
   
   /*
-    // Defined in <BlynkSimpleESP32_WFM.h>
+    // Defined in <BlynkSimpleESP32_Async_WFM.h>
   
     #define SSID_MAX_LEN      32
     #define PASS_MAX_LEN      64
@@ -1132,7 +1135,7 @@ void loop()
   Blynk_WM_Configuration defaultConfig =
   {
     //char header[16], dummy, not used
-  #if USE_SSL
+  #if USE_SSL  
     "SSL",
   #else
     "NonSSL",
@@ -1166,7 +1169,7 @@ void loop()
 
 ---
 
-#### 4. File [dynamicParams.h](examples/ESP32_BLE_WF/dynamicParams.h)
+#### 4. File [dynamicParams.h](examples/Async_ESP32_BLE_WF/dynamicParams.h)
 
 ```cpp
 #ifndef dynamicParams_h
@@ -1182,7 +1185,7 @@ void loop()
   
   /////////////// Start dynamic Credentials ///////////////
   
-  //Defined in <BlynkSimpleESP32_WFM.h>
+  //Defined in <BlynkSimpleESP32_Async_WFM.h>
   /**************************************
     #define MAX_ID_LEN                5
     #define MAX_DISPLAY_NAME_LEN      16
@@ -1247,17 +1250,18 @@ void loop()
 ---
 ---
 
+
 ### Debug Terminal Output Samples
 
-#### 1. ESP32_BLE_WF on ESP32_DEV
+#### 1. Async_ESP32_BLE_WF on ESP32_DEV
 
-The following is the sample terminal output when running example [ESP32_BLE_WF](examples/ESP32_BLE_WF)
+The following is the sample terminal output when running example [Async_ESP32_BLE_WF](examples/Async_ESP32_BLE_WF)
 
 #### 1.1. No Config Data => Config Portal. Input valid credentials => reboot
 
 ```
-Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.2
+Starting Async_ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
+Blynk_Async_ESP32_BT_WF v1.2.2
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1314,8 +1318,8 @@ FF[9799112] id: = HueNet1
 #### 1.2. DRD => Config Portal. Input valid credentials => reboot
 
 ```
-Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.2
+Starting Async_ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
+Blynk_Async_ESP32_BT_WF v1.2.2
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1392,8 +1396,8 @@ FFFFF
 #### 1.3. After inputting valid credentials and reboot
 
 ```
-Starting ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.2
+Starting Async_ESP32_BLE_WF using SPIFFS without SSL on ESP32_DEV
+Blynk_Async_ESP32_BT_WF v1.2.2
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1471,15 +1475,16 @@ BBBB
 
 ```
 CP Button Hit. Rebooting
-[175599] setForcedCP non-Persistent
-[175608] SaveCPFile 
-[175611] OK
-[175620] SaveBkUpCPFile 
-[175624] OK
+[13025] setForcedCP non-Persistent
+[13039] SaveCPFile 
+[13044] OK
+[13058] SaveBkUpCPFile 
+[13063] OK
 ets Jun  8 2016 00:22:57
 
-Starting ESP32_BLE_WF using LITTLEFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.2
+
+Starting Async_ESP32_BLE_WF using LITTLEFS without SSL on ESP32_DEV
+Blynk_Async_ESP32_BT_WF v1.2.2
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1487,49 +1492,49 @@ LittleFS Flag read = 0xD0D04321
 No doubleResetDetected
 Saving config file...
 Saving config file OK
-[350] Hostname=GeigerCounter-BLE
-[381] LoadCfgFile 
-[386] OK
-[386] ======= Start Stored Config Data =======
-[386] Hdr=ESP32_WFM,BrdName=ESP32_BT_BLE
-[386] SSID=HueNet1,PW=12345678
-[386] SSID1=HueNet2,PW1=12345678
-[389] Server=account.duckdns.org,Token=token
-[395] Server1=account.duckdns.org,Token1=token1
-[401] BT-Token=bt_token,BLE-Token=ble_token
-[409] Port=8080
-[411] ======= End Config Data =======
-[414] CCSum=0x4b86,RCSum=0x4b86
-[429] LoadCredFile 
-[434] CrR:pdata=new-mqtt-server,len=34
-[434] CrR:pdata=1883,len=6
-[434] CrR:pdata=default-mqtt-username,len=34
-[434] CrR:pdata=default-mqtt-password,len=34
-[437] CrR:pdata=default-mqtt-SubTopic,len=34
-[441] CrR:pdata=default-mqtt-PubTopic,len=34
-[445] OK
-[446] CrCCsum=0x280b,CrRCsum=0x280b
-[449] Valid Stored Dynamic Data
-[452] Hdr=ESP32_WFM,BrdName=ESP32_BT_BLE
-[456] SSID=HueNet1,PW=12345678
-[459] SSID1=HueNet2,PW1=12345678
-[462] Server=account.duckdns.org,Token=token
-[468] Server1=account.duckdns.org,Token1=token1
-[474] BT-Token=bt_token,BLE-Token=ble_token
-[482] Port=8080
-[484] ======= End Config Data =======
-[487] Check if isForcedCP
-[500] LoadCPFile 
+[481] Hostname=GeigerCounter-BLE
+[501] LoadCfgFile 
 [504] OK
-[504] bg: isForcedConfigPortal = true
-[504] bg:Stay forever in CP:Forced-non-Persistent
-[504] clearForcedCP
-[514] SaveCPFile 
-[518] OK
-[528] SaveBkUpCPFile 
-[532] OK
-[1377] stConf:SSID=TestPortal-ESP32,PW=TestPortalPass
-[1377] IP=192.168.232.1,ch=9
+[505] ======= Start Stored Config Data =======
+[505] Hdr=ESP32_WFM,BrdName=ESP32_BT_BLE
+[505] SSID=HueNet1,PW=12345678
+[506] SSID1=HueNet2,PW1=12345678
+[509] Server=account.duckdns.org,Token=token
+[515] Server1=account.duckdns.org,Token1=token1
+[521] BT-Token=bt_token,BLE-Token=ble_token
+[529] Port=8080
+[531] ======= End Config Data =======
+[534] CCSum=0x4b86,RCSum=0x4b86
+[545] LoadCredFile 
+[548] CrR:pdata=new-mqtt-server,len=34
+[548] CrR:pdata=1883,len=6
+[548] CrR:pdata=default-mqtt-username,len=34
+[549] CrR:pdata=default-mqtt-password,len=34
+[553] CrR:pdata=default-mqtt-SubTopic,len=34
+[557] CrR:pdata=default-mqtt-PubTopic,len=34
+[561] OK
+[562] CrCCsum=0x280b,CrRCsum=0x280b
+[565] Valid Stored Dynamic Data
+[568] Hdr=ESP32_WFM,BrdName=ESP32_BT_BLE
+[571] SSID=HueNet1,PW=12345678
+[574] SSID1=HueNet2,PW1=12345678
+[577] Server=account.duckdns.org,Token=token
+[583] Server1=account.duckdns.org,Token1=token1
+[589] BT-Token=bt_token,BLE-Token=ble_token
+[597] Port=8080
+[599] ======= End Config Data =======
+[602] Check if isForcedCP
+[612] LoadCPFile 
+[615] OK
+[615] bg: isForcedConfigPortal = true
+[615] bg:Stay forever in CP:Forced-non-Persistent
+[615] clearForcedCP
+[624] SaveCPFile 
+[628] OK
+[636] SaveBkUpCPFile 
+[640] OK
+[1485] stConf:SSID=TestPortal-ESP32,PW=TestPortalPass
+[1485] IP=192.168.232.1,ch=7
 F
 Your stored Credentials :
 MQTT Server = new-mqtt-server
@@ -1552,15 +1557,16 @@ F
 
 ```
 Persistent CP Button Hit. Rebooting
-[10487] setForcedCP Persistent
-[10500] SaveCPFile 
-[10505] OK
-[10628] SaveBkUpCPFile 
-[10676] OK
+[218377] setForcedCP Persistent
+[218390] SaveCPFile 
+[218394] OK
+[218408] SaveBkUpCPFile 
+[218413] OK
 ets Jun  8 2016 00:22:57
 
-Starting ESP32_BLE_WF using LITTLEFS without SSL on ESP32_DEV
-BlynkESP32_BT_WF v1.2.2
+
+Starting Async_ESP32_BLE_WF using LITTLEFS without SSL on ESP32_DEV
+Blynk_Async_ESP32_BT_WF v1.2.2
 ESP_DoubleResetDetector v1.1.1
 GPIO14 HIGH, Use WiFi
 USE_BLYNK_WM: Blynk_WF begin
@@ -1568,44 +1574,44 @@ LittleFS Flag read = 0xD0D04321
 No doubleResetDetected
 Saving config file...
 Saving config file OK
-[399] Hostname=GeigerCounter-BLE
-[421] LoadCfgFile 
-[425] OK
-[425] ======= Start Stored Config Data =======
-[425] Hdr=ESP32_WFM,BrdName=ESP32_BT_BLE
-[425] SSID=HueNet1,PW=12345678
-[426] SSID1=HueNet2,PW1=12345678
-[429] Server=account.duckdns.org,Token=token
-[435] Server1=account.duckdns.org,Token1=token1
-[441] BT-Token=bt_token,BLE-Token=ble_token
-[449] Port=8080
-[450] ======= End Config Data =======
-[454] CCSum=0x4b86,RCSum=0x4b86
-[465] LoadCredFile 
-[468] CrR:pdata=new-mqtt-server,len=34
-[468] CrR:pdata=1883,len=6
-[468] CrR:pdata=default-mqtt-username,len=34
-[468] CrR:pdata=default-mqtt-password,len=34
-[472] CrR:pdata=default-mqtt-SubTopic,len=34
-[476] CrR:pdata=default-mqtt-PubTopic,len=34
-[480] OK
-[481] CrCCsum=0x280b,CrRCsum=0x280b
-[485] Valid Stored Dynamic Data
-[487] Hdr=ESP32_WFM,BrdName=ESP32_BT_BLE
-[491] SSID=HueNet1,PW=12345678
-[494] SSID1=HueNet2,PW1=12345678
-[497] Server=account.duckdns.org,Token=token
-[503] Server1=account.duckdns.org,Token1=token1
-[509] BT-Token=bt_token,BLE-Token=ble_token
-[517] Port=8080
-[519] ======= End Config Data =======
-[522] Check if isForcedCP
-[532] LoadCPFile 
-[535] OK
-[535] bg: isForcedConfigPortal = true
-[535] bg:Stay forever in CP:Forced-Persistent
-[1380] stConf:SSID=TestPortal-ESP32,PW=TestPortalPass
-[1380] IP=192.168.232.1,ch=1
+[363] Hostname=GeigerCounter-BLE
+[409] LoadCfgFile 
+[416] OK
+[416] ======= Start Stored Config Data =======
+[416] Hdr=ESP32_WFM,BrdName=ESP32_BT_BLE
+[416] SSID=HueNet1,PW=12345678
+[416] SSID1=HueNet2,PW1=12345678
+[419] Server=account.duckdns.org,Token=token
+[425] Server1=account.duckdns.org,Token1=token1
+[432] BT-Token=bt_token,BLE-Token=ble_token
+[440] Port=8080
+[441] ======= End Config Data =======
+[444] CCSum=0x4b86,RCSum=0x4b86
+[467] LoadCredFile 
+[473] CrR:pdata=new-mqtt-server,len=34
+[473] CrR:pdata=1883,len=6
+[473] CrR:pdata=default-mqtt-username,len=34
+[473] CrR:pdata=default-mqtt-password,len=34
+[476] CrR:pdata=default-mqtt-SubTopic,len=34
+[480] CrR:pdata=default-mqtt-PubTopic,len=34
+[484] OK
+[485] CrCCsum=0x280b,CrRCsum=0x280b
+[488] Valid Stored Dynamic Data
+[491] Hdr=ESP32_WFM,BrdName=ESP32_BT_BLE
+[494] SSID=HueNet1,PW=12345678
+[497] SSID1=HueNet2,PW1=12345678
+[500] Server=account.duckdns.org,Token=token
+[506] Server1=account.duckdns.org,Token1=token1
+[513] BT-Token=bt_token,BLE-Token=ble_token
+[521] Port=8080
+[522] ======= End Config Data =======
+[526] Check if isForcedCP
+[541] LoadCPFile 
+[546] OK
+[546] bg: isForcedConfigPortal = true
+[546] bg:Stay forever in CP:Forced-Persistent
+[1391] stConf:SSID=TestPortal-ESP32,PW=TestPortalPass
+[1391] IP=192.168.232.1,ch=1
 F
 Your stored Credentials :
 MQTT Server = new-mqtt-server
@@ -1650,13 +1656,6 @@ Sometimes, the library will only work if you update the board core to the latest
 ---
 
 
-### Issues ###
-
-Submit issues to: [BlynkESP32_BT_WF issues](https://github.com/khoih-prog/BlynkESP32_BT_WF/issues)
-
----
----
-
 ## TO DO
 
 1. Same features for other boards with WiFi / BT
@@ -1691,30 +1690,36 @@ Submit issues to: [BlynkESP32_BT_WF issues](https://github.com/khoih-prog/BlynkE
 21. **DoubleDetectDetector** to force Config Portal when double reset is detected within predetermined time, default 10s.
 22. Configurable Config Portal Title
 23. Re-structure all examples to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
-24. Add functions to control Config Portal from software or **Virtual Switches**.
-25. Configurable **Customs HTML Headers**, including Customs Style, Customs Head Elements, CORS Header
-26. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
-27. Enforce WiFi PWD minimum length of 8 chars
-28. Enable **scan of WiFi networks** for selection in Configuration Portal
-29. Add auto-reconnect feature for BLE.
+24. Using [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) instead of (ESP8266)WebServer.
+25. Add support to LittleFS for ESP32 using [LITTLEFS](https://github.com/lorol/LITTLEFS) Library
+26. Add Table of Contents and Version String
+27. Clean-up all compiler warnings possible.
+28. Add functions to control Config Portal from software or **Virtual Switches**.
+29. Configurable **Customs HTML Headers**, including Customs Style, Customs Head Elements, CORS Header
+30. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
+31. Enforce WiFi PWD minimum length of 8 chars
+32. Enable **scan of WiFi networks** for selection in Configuration Portal
+33. Add auto-reconnect feature for BLE.
 
 ---
 ---
 
 ### Contributions and thanks
 
-1. Thanks to [Crosswalkersam](https://community.blynk.cc/u/Crosswalkersam) for the original code and request to inspire the work. See [Select connection Type via Switch](https://community.blynk.cc/t/select-connection-type-via-switch/43176)
-2. Thanks to [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for working with, developing, debugging, testing and contributing example [PET_Check](examples/PET_Check). See also [nina-w102-ble-detector-presenca-de-pet](https://nina-b302-scanner-presenca.blogspot.com/2020/06/nina-w102-ble-detector-presenca-de-pet.html)
-3. Thanks to [Thor Johnson](https://github.com/thorathome) and [Thor Johnson in Blynk](https://community.blynk.cc/u/thorathome) to test, find bug, suggest and encourage to add those new features in [Blynk_WiFiManager library](https://github.com/khoih-prog/Blynk_WM) v1.0.13, such as Default Credentials/Dynamic Parms, Configurable Config Portal Title, DRD.
+1. Thanks to [me-no-dev](https://github.com/me-no-dev) for great [ESPAsyncWebServer Library](https://github.com/me-no-dev/ESPAsyncWebServer) and [AsyncTCP](https://github.com/me-no-dev/AsyncTCP).
+2. Thanks to [Crosswalkersam](https://community.blynk.cc/u/Crosswalkersam) for the original code and request to inspire the work. See [Select connection Type via Switch](https://community.blynk.cc/t/select-connection-type-via-switch/43176)
+3. Thanks to [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for working with, developing, debugging, testing and contributing example [Async_PET_Check](examples/Async_PET_Check). See also [nina-w102-ble-detector-presenca-de-pet](https://nina-b302-scanner-presenca.blogspot.com/2020/06/nina-w102-ble-detector-presenca-de-pet.html)
+4. Thanks to [Thor Johnson](https://github.com/thorathome) and [Thor Johnson in Blynk](https://community.blynk.cc/u/thorathome) to test, find bug, suggest and encourage to add those new features in [Blynk_WiFiManager library](https://github.com/khoih-prog/Blynk_WM) v1.0.13, such as Default Credentials/Dynamic Parms, Configurable Config Portal Title, DRD.
 Check these new features thanks to his direct contribution and/or enhancement requests :
   * [How to trigger a Config Portal from code #25](https://github.com/khoih-prog/Blynk_WM/issues/25)
   * [Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27](https://github.com/khoih-prog/Blynk_WM/issues/27)
-4. Thanks to [Michael H. "bizprof"](https://github.com/bizprof). With the impressive new feature :
+5. Thanks to [Michael H. "bizprof"](https://github.com/bizprof). With the impressive new feature :
   - `Enable scan of WiFi networks for selection in Configuration Portal`. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10) leading to v1.2.0
-5. Thanks to [Valeria](https://github.com/Valeria) to provide the amazing fix to permit BLE auto-reconnect. Check [Handle BLE disconnects #2](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/issues/2)
+6. Thanks to [Valeria](https://github.com/Valeria) to provide the amazing fix to permit BLE auto-reconnect. Check [Handle BLE disconnects #2](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/issues/2)
 
 <table>
   <tr>
+    <td align="center"><a href="https://github.com/me-no-dev"><img src="https://github.com/me-no-dev.png" width="100px;" alt="me-no-dev"/><br /><sub><b>⭐️⭐️ me-no-dev</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/Crosswalkersam"><img src="https://github.com/Crosswalkersam.png" width="100px;" alt="Crosswalkersam"/><br /><sub><b>Crosswalkersam</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/tcpipchip"><img src="https://github.com/tcpipchip.png" width="100px;" alt="tcpipchip"/><br /><sub><b>⭐️ tcpipchip</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/thorathome"><img src="https://github.com/thorathome.png" width="100px;" alt="thorathome"/><br /><sub><b>⭐️⭐️ Thor Johnson</b></sub></a><br /></td>
@@ -1728,7 +1733,6 @@ Check these new features thanks to his direct contribution and/or enhancement re
 ### Contributing
 
 If you want to contribute to this project:
-
 - Report bugs and errors
 - Ask for enhancements
 - Create issues and pull requests
@@ -1738,10 +1742,13 @@ If you want to contribute to this project:
 
 ### License
 
-- The library is licensed under [MIT](https://github.com/khoih-prog/BlynkESP32_BT_WF/blob/master/LICENSE)
+- The library is licensed under [MIT](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF/blob/master/LICENSE)
 
 ---
 
 ### Copyright
 
 Copyright 2020- Khoi Hoang
+
+
+

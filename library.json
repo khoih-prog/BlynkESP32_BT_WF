@@ -1,8 +1,8 @@
 {
-  "name": "BlynkESP32_BT_WF",
+  "name": "Blynk_Async_ESP32_BT_WF",
   "version": "1.2.2",
-  "description": "By design, Blynk user can run ESP32 boards with either WiFi or BT/BLE by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot. This library also supports (auto)connection to MultiWiFi and MultiBlynk, dynamic custom as well as static parameters in Config Portal. Eliminate hardcoding your Wifi and Blynk credentials and configuration data saved in either LittlFS, SPIFFS or EEPROM. Optional default Credentials to be autoloaded into Config Portal to use or change instead of manually input. Static STA IP and DHCP Hostname as well as Config Portal AP channel, IP, SSID, Password can be configured. DoubleDetectDetector feature permits entering Config Portal as requested. Now with scanning of WiFi networks for selection in Configuration Portal.",
-  "keywords": "sensors, control, device, communication, wifi, ble, bt-ble, bluetooth, drd, mrd, double-reset, multi-reset, multi-wifi, multi-blynk, littlefs, spiffs, eeprom, webserver, config-portal, credentials, protocol, iot, m2m, smartphone, mobile, app, web, cloud, ethernet, usb, serial, gsm, gprs, 3g, data, esp8266, http, portal",
+  "description": "By design, Blynk user can run ESP32 boards with either WiFi or BT/BLE by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk BT / BLE and WiFi libraries in one sketch, run both WiFi and BT/BLE simultaneously, or select one to use at runtime after reboot. This library also supports (auto)connection to MultiWiFi and MultiBlynk, dynamic custom as well as static parameters in Config Portal. Eliminate hardcoding your Wifi and Blynk credentials and configuration data saved in either LittleFS, SPIFFS or EEPROM. Optional default Credentials to be autoloaded into Config Portal to use or change instead of manually input. Static STA IP and DHCP Hostname as well as Config Portal AP channel, IP, SSID, Password can be configured. DoubleDetectDetector feature permits entering Config Portal as requested. Using AsyncWebServer instead of WebServer. Now with scanning of WiFi networks for selection in Configuration Portal.",
+  "keywords": "async, control, device, communication, wifi, ble, bt-ble, bluetooth, drd, mrd, double-reset, multi-reset, multi-wifi, multi-blynk, littlefs, spiffs, eeprom, webserver, config-portal, credentials, protocol, iot, sensors, m2m, smartphone, mobile, app, web, cloud, ethernet, usb, serial, gsm, gprs, 3g, data, esp8266, http, portal",
   "authors":
   {
     "name":  "Khoi Hoang",
@@ -12,9 +12,9 @@
   "repository":
   {
     "type": "git",
-    "url": "//https://github.com/khoih-prog/BlynkESP32_BT_WF"
+    "url": "https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF"
   },
-  "homepage": "https://github.com/khoih-prog/BlynkESP32_BT_WF",
+  "homepage": "https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF",
   "export": {
     "exclude": [
       "linux",
@@ -22,22 +22,40 @@
       "tests"
     ]
   },
+  "frameworks": "*",
   "dependencies": 
   [
     {
       "owner": "blynkkk",
       "name": "Blynk",
-      "version": "^0.6.1",
+      "version": "^1.0.1",
       "platforms": ["espressif8266", "espressif32"]
     },
     {
       "owner": "khoih-prog",
       "name": "ESP_DoubleResetDetector",
-      "version": "^1.1.1",
+      "version": "^1.2.1",
       "platforms": ["espressif8266", "espressif32"]
+    },
+    {
+      "owner": "me-no-dev",
+      "name": "ESP Async WebServer",
+      "version": "^1.2.3",
+      "platforms": ["espressif8266", "espressif32"]
+    },
+    {
+      "owner": "me-no-dev",
+      "name": "AsyncTCP",
+      "version": "*",
+      "platforms": ["espressif32"]
+    },
+    {
+      "owner": "lorol",
+      "name": "LittleFS_esp32",
+      "version": "^1.0.6",
+      "platforms": ["espressif32"]
     }
   ],
-  "frameworks": "*",
-  "platforms": "*",
+  "platforms": ["espressif32"],
   "examples": "examples/*/*/*.ino"
 }
